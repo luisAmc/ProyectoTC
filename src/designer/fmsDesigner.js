@@ -5,6 +5,7 @@ function drawArrow(c, x, y, angle) {
   c.moveTo(x, y);
   c.lineTo(x - 8 * dx + 5 * dy, y - 8 * dy - 5 * dx);
   c.lineTo(x - 8 * dx - 5 * dy, y - 8 * dy + 5 * dx);
+  c.fillStyle = "white";
   c.fill();
 }
 
@@ -473,18 +474,4 @@ function convertLatexShortcuts(text) {
   }
 
   return text;
-}
-
-function disableMouseOverCanvas() {
-  canvas.onmousedown = function(e) {};
-  canvas.ondblclick = function(e) {};
-  canvas.onmousemove = function(e) {};
-  canvas.onmouseup = function(e) {};
-
-  var dfa = new DFA(nodes, links);
-
-  // console.log(nodes);
-  // console.log(links);
-
-  // pointer_animation = new Pointer(nodes[0].x, nodes[0].y);
 }
