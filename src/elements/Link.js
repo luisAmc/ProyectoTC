@@ -82,6 +82,7 @@ Link.prototype.draw = function(c) {
 		c.moveTo(stuff.startX, stuff.startY);
 		c.lineTo(stuff.endX, stuff.endY);
 	}
+	c.strokeStyle = 'white';
 	c.stroke();
 	// draw the head of the arrow
 	if(stuff.hasCircle) {

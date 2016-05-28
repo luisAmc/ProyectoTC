@@ -52,6 +52,7 @@ SelfLink.prototype.draw = function(c) {
 	// draw arc
 	c.beginPath();
 	c.arc(stuff.circleX, stuff.circleY, stuff.circleRadius, stuff.startAngle, stuff.endAngle, false);
+	c.strokeStyle = 'white';
 	c.stroke();
 	// draw the text on the loop farthest from the node
 	var textX = stuff.circleX + stuff.circleRadius * Math.cos(this.anchorAngle);

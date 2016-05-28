@@ -14,8 +14,8 @@ body {
 	padding: 0;
     margin: auto;
     display: block;
-    width: 60%;
-    height: 40%;
+    width: 800px;
+    height: 600px;
     position: relative;
     top: 0;
     bottom: 0;
@@ -37,7 +37,7 @@ body {
 }
 
 #input_text {
-	width: 40%;
+	width: 600px;
 	height: 2em;
 	padding: 0;
 	margin: auto;

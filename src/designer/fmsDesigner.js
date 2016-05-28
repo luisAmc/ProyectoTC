@@ -16,6 +16,7 @@ function canvasHasFocus() {
 function drawText(c, originalText, x, y, angleOrNull, isSelected) {
   text = convertLatexShortcuts(originalText);
   c.font = '20px "Times New Roman", serif';
+  c.fillStyle = 'white';
   var width = c.measureText(text).width;
 
   // center the text
