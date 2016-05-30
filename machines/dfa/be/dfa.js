@@ -2,11 +2,41 @@ function DFA (nodes, links) {
 	this.states = nodes.slice();
 	this.alphabet = null;
 	this.transitions = links.slice();
-	this.initial_state = null;
-	this.final_states = null;
-	
+	this.initial_state = nodes[0];
+	this.final_states = [];
+	for(var i =0;i<this.states.length; i++){
+		if(this.states[i].isAcceptState){
+			this.final_states.push(this.states[i]);
+		}
+	}
 	this.transition_table = this.createTransitionTable();
-	this.print();
+	this.print();	
+}
+
+DFA.prototype.evaluateString = function(input){
+	var currentNode = this.initial_state;
+	for(var currentLetter = 0; currentLetter<input.length; currentLetter++){
+		for(var i = 0; i<this.transitions.length; i++){
+			var current_transition = this.transitions[i];
+			if (current_transition.text.charAt(0) == input.charAt(currentLetter) && !(current_transition instanceof StartLink)) {
+				
+				if (current_transition instanceof Link && current_transition.nodeA.text == currentNode.text){
+					currentNode = current_transition.nodeB;
+					console.log(currentNode);
+					break;
+				}
+				else if (current_transition instanceof SelfLink && current_transition.node.text == currentNode.text) {
+					console.log(currentNode);
+					break;
+				}					
+			}
+							
+		}
+	}
+	if(currentNode.isAcceptState)
+		console.log("true");
+	else
+		console.log("false");
 }
 
 DFA.prototype.createTransitionTable = function() {
@@ -32,7 +62,7 @@ DFA.prototype.createTransitionTable = function() {
 	}
 	
 
-	console.log(transition_table);
+	//console.log(transition_table);
 	return transition_table;
 };
 
@@ -56,6 +86,8 @@ DFA.prototype.getStartTransition = function() {
 DFA.prototype.print = function() {
 	console.log(this.states);
 	console.log(this.transitions);
+	console.log(this.initial_state);
+	console.log(this.final_states);
 	this.printTransitionTable();
 };
 
@@ -84,5 +116,6 @@ function disableMouseOverDFACanvas() {
   canvas.onmouseup = function(e) {};
 
   var dfa = new DFA(nodes, links);
+  dfa.evaluateString(document.getElementById('input_text').value);
 }
 
