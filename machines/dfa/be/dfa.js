@@ -12,28 +12,28 @@ function DFA(nodes, links) {
     this.transition_table = this.createTransitionTable();
     this.print();
 }
-DFA.prototype.revertAllColoring = function(){
-	for(var i = 0 ; i < this.states.length; i++){
-		this.states[i].animate("white",30);
-	}
+DFA.prototype.revertAllColoring = function() {
+    for (var i = 0; i < this.states.length; i++) {
+        this.states[i].animate("white", 30);
+    }
 }
 DFA.prototype.evaluateString = function(input) {
     var currentNode = this.initial_state;
- 	var nodePath = [];
- 	var transitionPath = [];
+    var nodePath = [];
+    var transitionPath = [];
     for (var currentLetter = 0; currentLetter < input.length; currentLetter++) {
         for (var i = 0; i < this.transitions.length; i++) {
             var current_transition = this.transitions[i];
             if (current_transition.text.charAt(0) == input.charAt(currentLetter) && !(current_transition instanceof StartLink)) {
-                
+
                 if (current_transition instanceof Link && current_transition.nodeA.text == currentNode.text) {
                     currentNode = current_transition.nodeB;
                     nodePath.push(currentNode);
                     transitionPath.push(current_transition);
-              
+
                     break;
                 } else if (current_transition instanceof SelfLink && current_transition.node.text == currentNode.text) {
-                    console.log(currentNode);
+
                     nodePath.push(currentNode);
                     transitionPath.push(current_transition);
                     break;
@@ -41,34 +41,42 @@ DFA.prototype.evaluateString = function(input) {
             }
 
         }
-        
+
 
     }
 
     var nodeAmount = 0;
-    console.log(transitionPath.length)
-    var addAnimation = function(node,time,color,radiusSize){
-    	setTimeout(function(){
-    			
-    		node.animate(color,radiusSize);
-    	},700*time)
+    var timeAmount = 0;
+    var addAnimation = function(node, time, color, radiusSize) {
+
+        setTimeout(function() {
+
+            node.animate(color, radiusSize);
+        }, 300 * time)
     }
-    while(nodeAmount < nodePath.length){
-    	addAnimation(transitionPath[nodeAmount],nodeAmount+1,"yellow");
-    	addAnimation(nodePath[nodeAmount],nodeAmount+2,"yellow",31);
-    	addAnimation(transitionPath[nodeAmount],nodeAmount+3,"white");
-    	addAnimation(nodePath[nodeAmount],nodeAmount+3,"white",30);
-    	
-    	nodeAmount++;
+    while (nodeAmount < nodePath.length) {
+        addAnimation(transitionPath[nodeAmount], timeAmount + 1, "yellow");
+        addAnimation(transitionPath[nodeAmount], timeAmount + 3, "white");
+        addAnimation(nodePath[nodeAmount], timeAmount + 5, "yellow", 31);
+        addAnimation(nodePath[nodeAmount], timeAmount + 7, "white", 30);
+
+        nodeAmount++;
+        timeAmount += 7;
+
+
+
+
     }
 
     if (currentNode.isAcceptState) {
-        console.log("true");
-        addAnimation(currentNode,nodePath.length+2,"blue",31);
-      
-    } else
-      addAnimation(currentNode,nodePath.length+2,"red",31);
-        console.log("false");
+
+        addAnimation(currentNode, timeAmount, "blue", 31);
+
+    } else {
+
+        addAnimation(currentNode, timeAmount, "red", 31);
+    }
+
 }
 
 DFA.prototype.createTransitionTable = function() {
