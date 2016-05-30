@@ -16,12 +16,19 @@ Node.prototype.setAnchorPoint = function(x, y) {
 	this.x = x + this.mouseOffsetX;
 	this.y = y + this.mouseOffsetY;
 };
-
+Node.prototype.animate  = function(color,nodeRadius){
+	this.strokeStyle = color;
+	this.nodeRadius = nodeRadius;
+}
 Node.prototype.draw = function(c) {
 	// draw the circle
+
+	if(this.nodeRadius){
+		nodeRadius = this.nodeRadius;
+	}
 	c.beginPath();
 	c.arc(this.x, this.y, nodeRadius, 0, 2 * Math.PI, false);
-	c.strokeStyle = 'white';
+	c.strokeStyle = this.strokeStyle?this.strokeStyle:'white';
 	c.stroke();
 
 	// draw the text

@@ -71,7 +71,9 @@ Link.prototype.getEndPointsAndCircle = function() {
 		'isReversed': isReversed,
 	};
 };
-
+Link.prototype.animate = function(color,size){
+	this.strokeStyle = color;
+};
 Link.prototype.draw = function(c) {
 	var stuff = this.getEndPointsAndCircle();
 	// draw arc
@@ -82,7 +84,7 @@ Link.prototype.draw = function(c) {
 		c.moveTo(stuff.startX, stuff.startY);
 		c.lineTo(stuff.endX, stuff.endY);
 	}
-	c.strokeStyle = 'white';
+	c.strokeStyle = this.strokeStyle?this.strokeStyle:'white';
 	c.stroke();
 	// draw the head of the arrow
 	if(stuff.hasCircle) {
