@@ -24,7 +24,15 @@ DFA.prototype.evaluateString = function(input) {
     for (var currentLetter = 0; currentLetter < input.length; currentLetter++) {
         for (var i = 0; i < this.transitions.length; i++) {
             var current_transition = this.transitions[i];
-            if (current_transition.text.charAt(0) == input.charAt(currentLetter) && !(current_transition instanceof StartLink)) {
+            var simbols = current_transition.text.split(',');
+            var simbolfound = false;
+            for(var searchsimbol =0; searchsimbol < simbols.length; searchsimbol++){
+                if(simbols[searchsimbol] == input.charAt(currentLetter)){
+                    simbolfound = true;
+                    break;
+                }
+            }
+            if (simbolfound && !(current_transition instanceof StartLink)) {
 
                 if (current_transition instanceof Link && current_transition.nodeA.text == currentNode.text) {
                     currentNode = current_transition.nodeB;
