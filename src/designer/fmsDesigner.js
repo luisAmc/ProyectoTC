@@ -132,7 +132,7 @@ function snapNode(node) {
   }
 }
 
-window.onload = function() {
+function enablecanvas(){
   canvas = document.getElementById('canvas');
   //restoreBackup();
   draw();
@@ -234,6 +234,10 @@ window.onload = function() {
       draw();
     }
   };
+}
+
+window.onload = function() {
+  enablecanvas();
 }
 
 var shift = false;

@@ -295,3 +295,7 @@ function validarDFA(dfa){
 
 
 }
+
+function enableMouseOverDFACanvas() {
+	enablecanvas();
+}
