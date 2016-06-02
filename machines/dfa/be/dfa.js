@@ -160,4 +160,10 @@ function disableMouseOverDFACanvas() {
     var dfa = new DFA(nodes, links);
     dfa.revertAllColoring();
     dfa.evaluateString(document.getElementById('input_text').value);
+};
+function showDFADefinition(){
+    $(".mainComponents").slideUp();
+};
+function hideDFADefinition(){
+    $(".mainComponents").slideDown();
 }

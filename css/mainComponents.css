@@ -1,17 +1,17 @@
 * {
-  -webkit-box-sizing: border-box;
-     -moz-box-sizing: border-box;
-      -ms-box-sizing: border-box;
-          box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    box-sizing: border-box;
 }
 
-body { 
-  	font: 14px helvetica neue, helvetica, arial, sans-serif;
-  	background: #333;
+body {
+    font: 14px helvetica neue, helvetica, arial, sans-serif;
+    background: #333;
 }
 
 #canvas {
-	padding: 0;
+    padding: 0;
     margin: auto;
     display: block;
     width: 800px;
@@ -25,55 +25,59 @@ body {
 }
 
 #disable_canvas_button {
-	height: 2em;
-	padding: 0;
-	margin: auto;
+    height: 2em;
+    padding: 0;
+    margin: auto;
     display: block;
     position: relative;
-	top: 3em;
+    top: 3em;
     bottom: 0;
     left: 0;
     right: 0;
 }
 
 #input_text {
-	width: 600px;
-	height: 2em;
-	padding: 0;
-	margin: auto;
+    width: 600px;
+    height: 2em;
+    padding: 0;
+    margin: auto;
     display: block;
     position: relative;
-	top: 2em;
+    top: 2em;
     bottom: 1em;
     left: 0;
     right: 0;
 }
 
 .pic {
-	border: 3px solid #fff;  
-	float: left;
-	width: 250px;
-	height: 437px;
-	margin: 10px;
-	overflow: hidden;
-
-	-webkit-box-shadow: 5px 5px 5px #111;
-	    	box-shadow: 5px 5px 5px #111; 
+    border: 3px solid #fff;
+    float: left;
+    width: 250px;
+    height: 437px;
+    margin: 10px;
+    overflow: hidden;
+    -webkit-box-shadow: 5px 5px 5px #111;
+    box-shadow: 5px 5px 5px #111;
 }
 
 .grow img {
-	width: 250px;
-	height: 437px;
-
-
-	-webkit-transition: all 1s ease;
-	-moz-transition: all 1s ease;
-	-o-transition: all 1s ease;
-	-ms-transition: all 1s ease;
-	transition: all 1s ease;
+    width: 250px;
+    height: 437px;
+    -webkit-transition: all 1s ease;
+    -moz-transition: all 1s ease;
+    -o-transition: all 1s ease;
+    -ms-transition: all 1s ease;
+    transition: all 1s ease;
 }
 
 .grow img:hover {
-  width: 300px;
-  height: 487px;
+    width: 300px;
+    height: 487px;
+}
+
+#showDFABtn {
+    position: relative;
+    margin-bottom: 20px;
+    margin-left: 200px;
+    top: 12px;
 }

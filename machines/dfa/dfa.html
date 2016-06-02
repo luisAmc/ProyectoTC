@@ -1,29 +1,43 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset=utf-8 />
-		<link rel="stylesheet" type="text/css" href="../../css/mainComponents.css">
-		<script type="text/javascript" src="../../src/elements/Link.js"></script>
-		<script type="text/javascript" src="../../src/elements/Node.js"></script>
-		<script type="text/javascript" src="../../src/elements/SelfLink.js"></script>
-		<script type="text/javascript" src="../../src/elements/StartLink.js"></script>
-		<script type="text/javascript" src="../../src/elements/TemporaryLink.js"></script>
-		<script type="text/javascript" src="../../src/elements/Pointer.js"></script>
-		<script type="text/javascript" src="../../src/designer/fmsDesigner.js"></script>
-		<script type="text/javascript" src="be/dfa.js"></script>
-	</head>
-	<body>
-		<div class="mainComponents">
-			<div id="dfa_canvas">
-				<canvas id="canvas" width="800" height="600">
-					<span class="error">Your browser does not support<br>the HTML5 &lt;canvas&gt; element</span>
-				</canvas>
-			</div>
-			<div id="dfa_inputs">
-				<input type="text" id="input_text" name="input" placeholder="Ingrese el input">
-				<input type="button" id="disable_canvas_button" onclick="disableMouseOverDFACanvas()" value="Desabilitar canvas"/>
-			</div>
-		</div>
-		
-	</body>
+
+<head>
+    <meta charset=utf-8 />
+    <link rel="stylesheet" type="text/css" href="../../css/mainComponents.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+    <script type="text/javascript" src="../../src/elements/Link.js"></script>
+    <script type="text/javascript" src="../../src/elements/Node.js"></script>
+    <script type="text/javascript" src="../../src/elements/SelfLink.js"></script>
+    <script type="text/javascript" src="../../src/elements/StartLink.js"></script>
+    <script type="text/javascript" src="../../src/elements/TemporaryLink.js"></script>
+    <script type="text/javascript" src="../../src/elements/Pointer.js"></script>
+    <script type="text/javascript" src="../../src/designer/fmsDesigner.js"></script>
+    <script type="text/javascript" src="be/dfa.js"></script>
+</head>
+
+<body>
+    <div class="mainComponents">
+        <div id="dfa_canvas">
+            <canvas id="canvas" width="800" height="600">
+                <span class="error">Your browser does not support<br>the HTML5 &lt;canvas&gt; element</span>
+            </canvas>
+        </div>
+        <div id="dfa_inputs">
+            <input type="text" id="input_text" name="input" placeholder="Ingrese el input">
+            <input type="button" id="disable_canvas_button" onclick="disableMouseOverDFACanvas()" value="Desabilitar canvas" />
+            <input type="button" name="" id="showDFABtn" value="Mostrar Definición" onclick="showDFADefinition()">
+        </div>
+    </div>
+    <div id="dfa-definition">
+        <input type="button" name="" id="hideDFABtn" value="Mostrar DFA" onclick="hideDFADefinition()">
+        <div class="content">
+            <div class="content-title">
+                <h1>Definición Formal</h1></div>
+            <div class="content-body">
+                <h2>M = (Q,&Sigma;,&delta;,q<sub>0</sub>,F)</h2>
+            </div>
+        </div>
+    </div>
+</body>
+
 </html>
