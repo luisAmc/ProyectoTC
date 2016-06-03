@@ -22,6 +22,10 @@
                 <span class="error">Your browser does not support<br>the HTML5 &lt;canvas&gt; element</span>
             </canvas>
         </div>
+        <div id="input_animation">
+            <div style='text-decoration:line-through;' class="processed"></div>
+            <div class="unprocessed"></div>
+        </div>
         <div id="dfa_inputs">
             <input type="text" id="input_text" name="input" placeholder="Ingrese el input">
             <input type="button" id="disable_canvas_button" onclick="disableMouseOverDFACanvas()" value="Desabilitar canvas" />
@@ -32,9 +36,27 @@
         <input type="button" name="" id="hideDFABtn" value="Mostrar DFA" onclick="hideDFADefinition()">
         <div class="content">
             <div class="content-title">
-                <h1>Definición Formal</h1></div>
+                <h1 style="color:white">Definición Formal</h1></div>
             <div class="content-body">
-                <h2>M = (Q,&Sigma;,&delta;,q<sub>0</sub>,F)</h2>
+                <h2 style="color:white">M = (Q,&Sigma;,&delta;,q<sub>0</sub>,F)</h2>
+                <br>
+                <h3 class="title-info">Q = {&nbsp<p class="states info"></p>&nbsp}</h3>
+                <br>
+                <h3 class="title-info">&Sigma; = {&nbsp<p class="alphabet info"></p>&nbsp}</h3>
+                <br>
+                <h3 class="title-info">&delta;</h3>
+                <br>
+                <table class="transitions">
+                    <tr>
+                        <th>Estado Actual</th>
+                        <th>Símbolo</th>
+                        <th>Siguiente Estado</th>
+                    </tr>
+                </table>
+                <br>
+                <h3 class="title-info">q<sub>0</sub>&nbsp=&nbsp<p class="initial_state info"></p></h3>
+                <br>
+                <h3 class="title-info">F = {&nbsp <p class="final_states info"></p>&nbsp}</h3>
             </div>
         </div>
     </div>

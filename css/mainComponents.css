@@ -37,12 +37,12 @@ body {
 }
 
 #enable_canvas_button {
-	height: 2em;
-	padding: 0;
-	margin: auto;
+    height: 2em;
+    padding: 0;
+    margin: auto;
     display: block;
     position: relative;
-	top: 4em;
+    top: 4em;
     bottom: 0;
     left: 0;
     right: 0;
@@ -92,4 +92,33 @@ body {
     margin-bottom: 20px;
     margin-left: 200px;
     top: 12px;
+}
+
+div#input_animation {
+    position: fixed;
+    top: 0px;
+    right: 0;
+    background: white;
+    text-align: -webkit-center;
+    width: 300px;
+    display: flex;
+}
+
+.info {
+    position: relative;
+    bottom: 15px;
+    color: white;
+}
+
+.title-info {
+    display: -webkit-box;
+    color: white;
+}
+
+table.transitions,
+th,
+td {
+    border: 0.5px solid white;
+    color: white;
+    text-align: -webkit-center;
 }

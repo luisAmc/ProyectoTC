@@ -2,9 +2,9 @@ function DFA(nodes, links) {
     this.states = nodes.slice();
     this.transitions = links.slice();
     this.initial_state = null; // No importa si esta en null, va a pasar por la validación antes de recorrer w
-    try{
-    	this.initial_state = this.getStartTransition().node; //nodes[0];
-	}catch(err){}
+    try {
+        this.initial_state = this.getStartTransition().node; //nodes[0];
+    } catch (err) {}
     this.final_states = [];
     for (var i = 0; i < this.states.length; i++) {
         if (this.states[i].isAcceptState) {
@@ -12,7 +12,7 @@ function DFA(nodes, links) {
         }
     }
     this.transition_table = this.createTransitionTable();
-	this.alphabet = this.difineAlphabet();
+    this.alphabet = this.defineAlphabet();
     this.print();
 }
 DFA.prototype.revertAllColoring = function() {
@@ -24,13 +24,14 @@ DFA.prototype.evaluateString = function(input) {
     var currentNode = this.initial_state;
     var nodePath = [];
     var transitionPath = [];
+
     for (var currentLetter = 0; currentLetter < input.length; currentLetter++) {
         for (var i = 0; i < this.transitions.length; i++) {
             var current_transition = this.transitions[i];
             var simbols = current_transition.text.split(',');
             var simbolfound = false;
-            for(var searchsimbol =0; searchsimbol < simbols.length; searchsimbol++){
-                if(simbols[searchsimbol] == input.charAt(currentLetter)){
+            for (var searchsimbol = 0; searchsimbol < simbols.length; searchsimbol++) {
+                if (simbols[searchsimbol] == input.charAt(currentLetter)) {
                     simbolfound = true;
                     break;
                 }
@@ -63,10 +64,17 @@ DFA.prototype.evaluateString = function(input) {
         setTimeout(function() {
 
             node.animate(color, radiusSize);
-        }, 300 * time)
-    }
+        }, 300 * time);
+    };
+    var addTextAnimation = function(index,time){
+        setTimeout(function(){
+            $("#input_animation .processed").text(input.substr(0,index+1));
+            $("#input_animation .unprocessed").text(input.substr(index+1,input.length))
+        }, 310* time);
+    };
     while (nodeAmount < nodePath.length) {
         addAnimation(transitionPath[nodeAmount], timeAmount + 1, "yellow");
+        addTextAnimation(nodeAmount,timeAmount+1);
         addAnimation(transitionPath[nodeAmount], timeAmount + 3, "white");
         addAnimation(nodePath[nodeAmount], timeAmount + 5, "yellow", 31);
         addAnimation(nodePath[nodeAmount], timeAmount + 7, "white", 30);
@@ -110,13 +118,13 @@ DFA.prototype.createTransitionTable = function() {
             else if (current_transition instanceof SelfLink)
                 new_transition = this.getTransitions(current_transition.text, current_transition.node.text, current_transition.node.text);
 
-            if(new_transition.length>1){//Cuando las transiciones estan separadas por comas que las guarde por separado igual que las demás....
-            	for(var indexnew=0; indexnew<new_transition.length;indexnew++)
-					transition_table.push([new_transition[indexnew]]);
-            }else{
-            	transition_table.push(new_transition);
+            if (new_transition.length > 1) { //Cuando las transiciones estan separadas por comas que las guarde por separado igual que las demás....
+                for (var indexnew = 0; indexnew < new_transition.length; indexnew++)
+                    transition_table.push([new_transition[indexnew]]);
+            } else {
+                transition_table.push(new_transition);
             }
-            
+
         }
     }
 
@@ -125,22 +133,22 @@ DFA.prototype.createTransitionTable = function() {
     return transition_table;
 };
 
-DFA.prototype.difineAlphabet = function(){
-	var alphabet = [];
-	for (var index = 1; index < this.transition_table.length; index++) {
-        	var simbolfound = false;
-        	for(var indexalphabet=.0; indexalphabet< alphabet.length; indexalphabet++){
-        		if(alphabet[indexalphabet] == this.transition_table[index][0][1]){
-        			simbolfound = true;
-        			break;
-        		}
-        			
-        	}
-        	if(!simbolfound && this.transition_table[index][0][1]!="")
-        		alphabet.push(this.transition_table[index][0][1]);
+DFA.prototype.defineAlphabet = function() {
+    var alphabet = [];
+    for (var index = 1; index < this.transition_table.length; index++) {
+        var simbolfound = false;
+        for (var indexalphabet = .0; indexalphabet < alphabet.length; indexalphabet++) {
+            if (alphabet[indexalphabet] == this.transition_table[index][0][1]) {
+                simbolfound = true;
+                break;
+            }
+
+        }
+        if (!simbolfound && this.transition_table[index][0][1] != "")
+            alphabet.push(this.transition_table[index][0][1]);
     }
 
-   // console.log(alphabet);
+    // console.log(alphabet);
 
     return alphabet;
 };
@@ -163,23 +171,49 @@ DFA.prototype.getStartTransition = function() {
 };
 
 DFA.prototype.print = function() {
-    console.log(this.states);
-    console.log(this.transitions);
-    console.log(this.initial_state);
-    console.log(this.final_states);
+
+    var stateTexts = [];
+    var finalStatesTexts  = [];
+    for(var i = 0 ; i < this.states.length; i++){
+        stateTexts.push(this.states[i].text);
+    }
+    for(var i = 0 ; i < this.final_states.length; i++){
+        finalStatesTexts.push(this.final_states[i].text);
+    }
+    $(".states").text(stateTexts.toString());
+    $(".alphabet").text(this.alphabet.toString());
+    $(".initial_state").text(this.initial_state.text);
+    $(".final_states").text(finalStatesTexts.toString());
     this.printTransitionTable();
 };
 
 DFA.prototype.printTransitionTable = function() {
     var transition_table_text = "Transition table\n";
-
+    var newRow,newColumn;
+    console.log( this.transition_table)
     for (var index = 0; index < this.transition_table.length; index++) {
         for (var row = 0; row < this.transition_table[index].length; row++) {
+            if(index !== 0)
+                newRow = document.createElement("tr");
+
             transition_table_text += "[";
             for (var column = 0; column < this.transition_table[index][row].length; column++) {
+                
                 transition_table_text += "" + this.transition_table[index][row][column];
+                if(index !== 0){
+                    newColumn = document.createElement("td");
+                    
+                    newColumn.textContent = this.transition_table[index][row][column];
+                    newRow.appendChild(newColumn);
+
+                    console.log(newRow);
+                }
                 if (column != this.transition_table[index][row].length - 1)
                     transition_table_text += "\t";
+            }
+            if(newRow){
+                console.log(newRow)
+                $(".transitions tbody").append(newRow);
             }
             transition_table_text += "]\n";
         }
@@ -194,111 +228,115 @@ function disableMouseOverDFACanvas() {
     var dfa = new DFA(nodes, links);
     dfa.revertAllColoring();
 
-    dfa.evaluateString(document.getElementById('input_text').value);
+    if (validarDFA(dfa)) {
+        canvas.onmousedown = function(e) {};
+        canvas.ondblclick = function(e) {};
+        canvas.onmousemove = function(e) {};
+        canvas.onmouseup = function(e) {};
+        $("#input_animation .processed").text("");
+        $("#input_animation .unprocessed").text(document.getElementById('input_text').value);
+        dfa.evaluateString(document.getElementById('input_text').value);
+    }
 };
-function showDFADefinition(){
+
+function showDFADefinition() {
     $(".mainComponents").slideUp();
 };
-function hideDFADefinition(){
+
+function hideDFADefinition() {
     $(".mainComponents").slideDown();
 
 
-   if(validarDFA(dfa)){
-   		canvas.onmousedown = function(e) {};
-		canvas.ondblclick = function(e) {};
-		canvas.onmousemove = function(e) {};
-		canvas.onmouseup = function(e) {};
-		dfa.evaluateString(document.getElementById('input_text').value);
-   }
-  
+
+
 }
 
-function validarDFA(dfa){
+function validarDFA(dfa) {
 
-	if(dfa.states.length==0){
-    	alert("La máquina no se ha definido");
-    }else{
-    	var estadosetiquetados = true;
-		for(index =0; index< dfa.states.length;index++){
-    		if(dfa.states[index].text==""){
-    			alert("La máquina debe tener todos sus estados etiquetados");
-    			estadosetiquetados = false;
-    			break;
-    		}
-    	}
+    if (dfa.states.length == 0) {
+        alert("La máquina no se ha definido");
+    } else {
+        var estadosetiquetados = true;
+        for (index = 0; index < dfa.states.length; index++) {
+            if (dfa.states[index].text == "") {
+                alert("La máquina debe tener todos sus estados etiquetados");
+                estadosetiquetados = false;
+                break;
+            }
+        }
 
-    	if(estadosetiquetados){
-    		var etiquetasdiferentes = true;
-    		for(index=0 ; index<dfa.states.length-1;index++){
-    			for(index2=index+1; index2<dfa.states.length;index2++){
-    				if(dfa.states[index].text==dfa.states[index2].text){
-    					alert("Los estados deben tener etiquetas diferentes");
-    					etiquetasdiferentes = false;
-    					break;
-    				}
-    			}
+        if (estadosetiquetados) {
+            var etiquetasdiferentes = true;
+            for (index = 0; index < dfa.states.length - 1; index++) {
+                for (index2 = index + 1; index2 < dfa.states.length; index2++) {
+                    if (dfa.states[index].text == dfa.states[index2].text) {
+                        alert("Los estados deben tener etiquetas diferentes");
+                        etiquetasdiferentes = false;
+                        break;
+                    }
+                }
 
-    			if(!etiquetasdiferentes)
-    				break;
-    		}
+                if (!etiquetasdiferentes)
+                    break;
+            }
 
-    		if(etiquetasdiferentes){
-    			if(dfa.transition_table.length==1){
-    				alert("La máquina debe tener transiciones");
-    			}else{
-    				if(dfa.alphabet.length==0){
-    					alert("La máquina debe tener un alfabeto");
-    				}else{
-    					
+            if (etiquetasdiferentes) {
+                if (dfa.transition_table.length == 1) {
+                    alert("La máquina debe tener transiciones");
+                } else {
+                    if (dfa.alphabet.length == 0) {
+                        alert("La máquina debe tener un alfabeto");
+                    } else {
 
-    					if(dfa.initial_state==null){
-    						alert("La máquina debe tener un estado inicial");
-    						
-    					}else{ 
 
-    						if(dfa.final_states.length==0){
-    							alert("La máquina debe tener al menos un estado final");
-    						}else{
-								if(!(dfa.transition_table.length-1 == (dfa.states.length*dfa.alphabet.length))){
-	    							 alert("Los estados deben tener una transición para cada símbolo del alfabeto");
-	    						}else{// Ya esta validada la cantidad de transiciones que deben haber
-		    						var esdfa= true;
-		    						for(var states = 0; states< dfa.states.length; states++ ){
-		    							var state = dfa.states[states].text;
-		    							var contador=0;
-		    							var alfabeto = dfa.alphabet.slice(0);
-		    							for (var index = 1; index < dfa.transition_table.length; index++) {
-		        							if(state== dfa.transition_table[index][0][0]){
-		        								for(var indexalphabet =0; indexalphabet< alfabeto.length; indexalphabet++){
-		        									if(alfabeto[indexalphabet]==dfa.transition_table[index][0][1]){
-		        										alfabeto.splice(indexalphabet, 1);
-		        										contador++;
-		        										break;
-		        									}
-		        								}
-		        									
-		        							}
-		        						}
+                        if (dfa.initial_state == null) {
+                            alert("La máquina debe tener un estado inicial");
 
-		        						if(contador< dfa.alphabet.length){
-		        							alert("Los estados deben tener una transición para cada símbolo del alfabeto");
-		        							esdfa = false;
-		        							break;
-		        						}
-		    						}
-		    						
-		    						if(esdfa){
-					   					return true;
-				   					}
-				   				}
-				   			}
-    					}
-    				}
-			}
+                        } else {
 
-    		}
-    		
-    	}
+                            if (dfa.final_states.length == 0) {
+                                alert("La máquina debe tener al menos un estado final");
+                            } else {
+                                if (!(dfa.transition_table.length - 1 == (dfa.states.length * dfa.alphabet.length))) {
+                                    alert("Los estados deben tener una transición para cada símbolo del alfabeto");
+                                } else { // Ya esta validada la cantidad de transiciones que deben haber
+                                    var esdfa = true;
+                                    for (var states = 0; states < dfa.states.length; states++) {
+                                        var state = dfa.states[states].text;
+                                        var contador = 0;
+                                        var alfabeto = dfa.alphabet.slice(0);
+                                        for (var index = 1; index < dfa.transition_table.length; index++) {
+                                            if (state == dfa.transition_table[index][0][0]) {
+                                                for (var indexalphabet = 0; indexalphabet < alfabeto.length; indexalphabet++) {
+                                                    if (alfabeto[indexalphabet] == dfa.transition_table[index][0][1]) {
+                                                        alfabeto.splice(indexalphabet, 1);
+                                                        contador++;
+                                                        break;
+                                                    }
+                                                }
+
+                                            }
+                                        }
+
+                                        if (contador < dfa.alphabet.length) {
+                                            alert("Los estados deben tener una transición para cada símbolo del alfabeto");
+                                            esdfa = false;
+                                            break;
+                                        }
+                                    }
+
+                                    if (esdfa) {
+                                        return true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
+
+        }
 
     }
 
@@ -306,6 +344,6 @@ function validarDFA(dfa){
 }
 
 function enableMouseOverDFACanvas() {
-	enablecanvas();
+    enablecanvas();
 
 }
