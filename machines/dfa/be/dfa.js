@@ -238,6 +238,7 @@ function disableMouseOverDFACanvas() {
 };
 
 function showDFADefinition() {
+    var dfa = new DFA(nodes, links);
     if ($(".states").text() !== "") {
         $(".mainComponents").slideUp();
         $("body").css("overflow", "auto");

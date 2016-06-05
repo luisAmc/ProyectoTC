@@ -7,7 +7,7 @@
 
 body {
     font: 14px helvetica neue, helvetica, arial, sans-serif;
-    background: #333;
+    
     height: 680px;
     overflow-y: hidden;
 }
@@ -24,20 +24,12 @@ body {
     left: 0px;
     right: 0;
     border: 2px solid #ffffff;
+    background: #333;
 }
 
 div#dfa_inputs {
-    display: flex;
-    position: relative;
-    margin: auto;
-    left: 0;
-    right: 0;
-    padding-left: 70px;
-    padding-top: 30px;
-    bottom: 90px;
-    background: #A4A7A1;
-    height: 100px;
-    width: 800px;
+    padding: 20px;
+    margin-top: 200px;
 }
 
 #disable_canvas_button {
@@ -58,9 +50,10 @@ div#dfa_inputs {
 }
 
 #input_text {
-    width: 40%;
     height: 30px;
-    margin-right: 10px;
+    margin-right: 10px;    
+    margin: auto;
+    width: 70%;
 }
 
 .pic {
@@ -98,9 +91,8 @@ div#input_animation {
     top: 0px;
     right: 0;
     font-size: xx-large;
-    color: white;
+    color: red;
     text-align: -webkit-center;
-    width: 300px;
     display: flex;
 }
 
@@ -123,6 +115,7 @@ td {
 
 #dfa-definition {
     display: none;
+    background: #333;
 }
 
 .content {
@@ -134,4 +127,12 @@ td {
 
 .content-title {
     text-align: -webkit-center;
+}
+
+.mainDiv{
+    display: inline-block;
+}
+
+.center{
+    text-align: center;
 }

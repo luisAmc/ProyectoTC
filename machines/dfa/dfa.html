@@ -17,7 +17,23 @@
 </head>
 
 <body>
+    <nav class = "navbar navbar-default" role = "navigation">
+       
+       <div class = "navbar-header">
+          <a class = "navbar-brand" href = "#">Teoría de la Computación</a>
+       </div>       
+       <div>
+          <ul class = "nav navbar-nav">
+             <li class = "active"><a href = "dfa.html">DFA</a></li>
+             <li><a href = "#">PDA</a></li>
+             <li><a href = "#">TM</a></li>               
+          </ul>
+       </div>       
+    </nav>
     <div class="mainComponents">
+    <div class="row">
+        <div class="col-md-7 center">
+            
         <div id="dfa_canvas">
             <canvas id="canvas" width="800" height="600">
                 <span class="error">Your browser does not support<br>the HTML5 &lt;canvas&gt; element</span>
@@ -26,12 +42,17 @@
         <div id="input_animation">
             <div style='text-decoration:line-through;' class="processed"></div>
             <div class="unprocessed"></div>
-        </div>
-        <div id="dfa_inputs">
-            <input type="text" id="input_text" name="input" class="form-control" placeholder="Ingrese una cadena">
+        </div>        
+    </div>        
+        <div class="col-md-5 center">        
+            <div id="dfa_inputs">
+            <h2>Autómata Finito Determinístico</h2>
+            <input type="text" id="input_text" name="input" class="form-control" placeholder="Ingrese una cadena"><br>
             <button type="button" id="disable_canvas_button" class="btn btn-default" onclick="disableMouseOverDFACanvas()">Procesar Cadena</button>
             <button type="button" name="" id="showDFABtn" class="btn btn-default" onclick="showDFADefinition()">Mostrar Definición</button>
         </div>
+        </div>
+    </div>
     </div>
     <div id="dfa-definition">
         <button type="button" id="hideDFABtn" class="btn btn-default" onclick="hideDFADefinition()">Mostrar DFA</button>
