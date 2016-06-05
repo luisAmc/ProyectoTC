@@ -3,6 +3,7 @@
 
 <head>
     <meta charset=utf-8 />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="../../css/mainComponents.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
     <script type="text/javascript" src="../../src/elements/Link.js"></script>
@@ -27,26 +28,26 @@
             <div class="unprocessed"></div>
         </div>
         <div id="dfa_inputs">
-            <input type="text" id="input_text" name="input" placeholder="Ingrese el input">
-            <input type="button" id="disable_canvas_button" onclick="disableMouseOverDFACanvas()" value="Desabilitar canvas" />
-            <input type="button" name="" id="showDFABtn" value="Mostrar Definición" onclick="showDFADefinition()">
+            <input type="text" id="input_text" name="input" class="form-control" placeholder="Ingrese una cadena">
+            <button type="button" id="disable_canvas_button" class="btn btn-default" onclick="disableMouseOverDFACanvas()">Procesar Cadena</button>
+            <button type="button" name="" id="showDFABtn" class="btn btn-default" onclick="showDFADefinition()">Mostrar Definición</button>
         </div>
     </div>
     <div id="dfa-definition">
-        <input type="button" name="" id="hideDFABtn" value="Mostrar DFA" onclick="hideDFADefinition()">
+        <button type="button" id="hideDFABtn" class="btn btn-default" onclick="hideDFADefinition()">Mostrar DFA</button>
         <div class="content">
             <div class="content-title">
-                <h1 style="color:white">Definición Formal</h1></div>
+                <h1 style="color:white"><u>Definición Formal</u></h1></div>
             <div class="content-body">
-                <h2 style="color:white">M = (Q,&Sigma;,&delta;,q<sub>0</sub>,F)</h2>
+                <h2 style="color:white">M = (Q,&nbsp;&Sigma;,&nbsp&delta;,&nbsp;q<sub>0</sub>,&nbsp;F)</h2>
                 <br>
-                <h3 class="title-info">Q = {&nbsp<p class="states info"></p>&nbsp}</h3>
+                <h3 class="title-info">Q = {&nbsp;<p class="states info"></p>&nbsp;}</h3>
                 <br>
-                <h3 class="title-info">&Sigma; = {&nbsp<p class="alphabet info"></p>&nbsp}</h3>
+                <h3 class="title-info">&Sigma; = {&nbsp;<p class="alphabet info"></p>&nbsp;}</h3>
                 <br>
                 <h3 class="title-info">&delta;</h3>
                 <br>
-                <table class="transitions">
+                <table class="transitions table table-condensed">
                     <tr>
                         <th>Estado Actual</th>
                         <th>Símbolo</th>
@@ -54,9 +55,9 @@
                     </tr>
                 </table>
                 <br>
-                <h3 class="title-info">q<sub>0</sub>&nbsp=&nbsp<p class="initial_state info"></p></h3>
+                <h3 class="title-info">q<sub>0</sub>&nbsp;=&nbsp;<p class="initial_state info"></p></h3>
                 <br>
-                <h3 class="title-info">F = {&nbsp <p class="final_states info"></p>&nbsp}</h3>
+                <h3 class="title-info">F = {&nbsp; <p class="final_states info"></p>&nbsp;}</h3>
             </div>
         </div>
     </div>

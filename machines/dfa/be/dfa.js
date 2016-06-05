@@ -66,15 +66,15 @@ DFA.prototype.evaluateString = function(input) {
             node.animate(color, radiusSize);
         }, 300 * time);
     };
-    var addTextAnimation = function(index,time){
-        setTimeout(function(){
-            $("#input_animation .processed").text(input.substr(0,index+1));
-            $("#input_animation .unprocessed").text(input.substr(index+1,input.length))
-        }, 310* time);
+    var addTextAnimation = function(index, time) {
+        setTimeout(function() {
+            $("#input_animation .processed").text(input.substr(0, index + 1));
+            $("#input_animation .unprocessed").text(input.substr(index + 1, input.length))
+        }, 310 * time);
     };
     while (nodeAmount < nodePath.length) {
         addAnimation(transitionPath[nodeAmount], timeAmount + 1, "yellow");
-        addTextAnimation(nodeAmount,timeAmount+1);
+        addTextAnimation(nodeAmount, timeAmount + 1);
         addAnimation(transitionPath[nodeAmount], timeAmount + 3, "white");
         addAnimation(nodePath[nodeAmount], timeAmount + 5, "yellow", 31);
         addAnimation(nodePath[nodeAmount], timeAmount + 7, "white", 30);
@@ -173,11 +173,11 @@ DFA.prototype.getStartTransition = function() {
 DFA.prototype.print = function() {
 
     var stateTexts = [];
-    var finalStatesTexts  = [];
-    for(var i = 0 ; i < this.states.length; i++){
+    var finalStatesTexts = [];
+    for (var i = 0; i < this.states.length; i++) {
         stateTexts.push(this.states[i].text);
     }
-    for(var i = 0 ; i < this.final_states.length; i++){
+    for (var i = 0; i < this.final_states.length; i++) {
         finalStatesTexts.push(this.final_states[i].text);
     }
     $(".states").text(stateTexts.toString());
@@ -189,37 +189,35 @@ DFA.prototype.print = function() {
 
 DFA.prototype.printTransitionTable = function() {
     var transition_table_text = "Transition table\n";
-    var newRow,newColumn;
-    console.log( this.transition_table)
+    var newRow, newColumn;
+    $(".transitions tbody").empty();
+    $(".transitions tbody").append('<tr><th>Estado Actual</th><th>Símbolo</th><th>Siguiente Estado</th></tr>');
     for (var index = 0; index < this.transition_table.length; index++) {
         for (var row = 0; row < this.transition_table[index].length; row++) {
-            if(index !== 0)
+            if (index !== 0)
                 newRow = document.createElement("tr");
 
             transition_table_text += "[";
             for (var column = 0; column < this.transition_table[index][row].length; column++) {
-                
+
                 transition_table_text += "" + this.transition_table[index][row][column];
-                if(index !== 0){
+                if (index !== 0) {
                     newColumn = document.createElement("td");
-                    
+
                     newColumn.textContent = this.transition_table[index][row][column];
                     newRow.appendChild(newColumn);
-
-                    console.log(newRow);
                 }
                 if (column != this.transition_table[index][row].length - 1)
                     transition_table_text += "\t";
             }
-            if(newRow){
-                console.log(newRow)
+            if (newRow) {
                 $(".transitions tbody").append(newRow);
             }
             transition_table_text += "]\n";
         }
     }
 
-    console.log(transition_table_text);
+
 };
 
 
@@ -240,13 +238,18 @@ function disableMouseOverDFACanvas() {
 };
 
 function showDFADefinition() {
-    $(".mainComponents").slideUp();
+    if ($(".states").text() !== "") {
+        $(".mainComponents").slideUp();
+        $("body").css("overflow", "auto");
+        $("#dfa-definition").show();
+    }
+
 };
 
 function hideDFADefinition() {
     $(".mainComponents").slideDown();
-
-
+    $("body").css("overflow", "hidden");
+    $("#dfa-definition").hide();
 
 
 }

@@ -8,6 +8,8 @@
 body {
     font: 14px helvetica neue, helvetica, arial, sans-serif;
     background: #333;
+    height: 680px;
+    overflow-y: hidden;
 }
 
 #canvas {
@@ -17,23 +19,30 @@ body {
     width: 800px;
     height: 600px;
     position: relative;
-    top: 0;
+    top: 10px;
     bottom: 0;
-    left: 0;
+    left: 0px;
     right: 0;
     border: 2px solid #ffffff;
 }
 
-#disable_canvas_button {
-    height: 2em;
-    padding: 0;
-    margin: auto;
-    display: block;
+div#dfa_inputs {
+    display: flex;
     position: relative;
-    top: 3em;
-    bottom: 0;
+    margin: auto;
     left: 0;
     right: 0;
+    padding-left: 70px;
+    padding-top: 30px;
+    bottom: 90px;
+    background: #A4A7A1;
+    height: 100px;
+    width: 800px;
+}
+
+#disable_canvas_button {
+    height: 30px;
+    margin-right: 10px;
 }
 
 #enable_canvas_button {
@@ -49,16 +58,9 @@ body {
 }
 
 #input_text {
-    width: 600px;
-    height: 2em;
-    padding: 0;
-    margin: auto;
-    display: block;
-    position: relative;
-    top: 2em;
-    bottom: 1em;
-    left: 0;
-    right: 0;
+    width: 40%;
+    height: 30px;
+    margin-right: 10px;
 }
 
 .pic {
@@ -88,25 +90,21 @@ body {
 }
 
 #showDFABtn {
-    position: relative;
-    margin-bottom: 20px;
-    margin-left: 200px;
-    top: 12px;
+    height: 30px;
 }
 
 div#input_animation {
     position: fixed;
     top: 0px;
     right: 0;
-    background: white;
+    font-size: xx-large;
+    color: white;
     text-align: -webkit-center;
     width: 300px;
     display: flex;
 }
 
 .info {
-    position: relative;
-    bottom: 15px;
     color: white;
 }
 
@@ -120,5 +118,20 @@ th,
 td {
     border: 0.5px solid white;
     color: white;
+    text-align: -webkit-center;
+}
+
+#dfa-definition {
+    display: none;
+}
+
+.content {
+    width: 80%;
+    margin: auto;
+    border: 1px solid white;
+    padding: 20px;
+}
+
+.content-title {
     text-align: -webkit-center;
 }
