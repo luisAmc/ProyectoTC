@@ -1,49 +1,138 @@
 * {
-  -webkit-box-sizing: border-box;
-     -moz-box-sizing: border-box;
-      -ms-box-sizing: border-box;
-          box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    box-sizing: border-box;
 }
 
-body { 
-  	font: 14px helvetica neue, helvetica, arial, sans-serif;
-  	background: #333;
+body {
+    font: 14px helvetica neue, helvetica, arial, sans-serif;
+    
+    height: 680px;
+    overflow-y: hidden;
 }
 
 #canvas {
-	border: 1px solid #000000;
-/*	width: 70%;
-	height: 70%;
-	position: absolute;
-	left: 0;
-*/	top: 0;
+    padding: 0;
+    margin: auto;
+    display: block;
+    width: 800px;
+    height: 600px;
+    position: relative;
+    top: 10px;
+    bottom: 0;
+    left: 0px;
+    right: 0;
+    border: 2px solid #ffffff;
+    background: #333;
+}
+
+div#dfa_inputs {
+    padding: 20px;
+    margin-top: 200px;
+}
+
+#disable_canvas_button {
+    height: 30px;
+    margin-right: 10px;
+}
+
+#enable_canvas_button {
+    height: 2em;
+    padding: 0;
+    margin: auto;
+    display: block;
+    position: relative;
+    top: 4em;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+#input_text {
+    height: 30px;
+    margin-right: 10px;    
+    margin: auto;
+    width: 70%;
 }
 
 .pic {
-	border: 3px solid #fff;  
-	float: left;
-	width: 250px;
-	height: 437px;
-	margin: 10px;
-	overflow: hidden;
-
-	-webkit-box-shadow: 5px 5px 5px #111;
-	    	box-shadow: 5px 5px 5px #111; 
+    border: 3px solid #fff;
+    float: left;
+    width: 250px;
+    height: 437px;
+    margin: 10px;
+    overflow: hidden;
+    -webkit-box-shadow: 5px 5px 5px #111;
+    box-shadow: 5px 5px 5px #111;
 }
 
 .grow img {
-	width: 250px;
-	height: 437px;
-
-
-	-webkit-transition: all 1s ease;
-	-moz-transition: all 1s ease;
-	-o-transition: all 1s ease;
-	-ms-transition: all 1s ease;
-	transition: all 1s ease;
+    width: 250px;
+    height: 437px;
+    -webkit-transition: all 1s ease;
+    -moz-transition: all 1s ease;
+    -o-transition: all 1s ease;
+    -ms-transition: all 1s ease;
+    transition: all 1s ease;
 }
 
 .grow img:hover {
-  width: 300px;
-  height: 487px;
+    width: 300px;
+    height: 487px;
+}
+
+#showDFABtn {
+    height: 30px;
+}
+
+div#input_animation {
+    position: fixed;
+    top: 0px;
+    right: 0;
+    font-size: xx-large;
+    color: red;
+    text-align: -webkit-center;
+    display: flex;
+}
+
+.info {
+    color: white;
+}
+
+.title-info {
+    display: -webkit-box;
+    color: white;
+}
+
+table.transitions,
+th,
+td {
+    border: 0.5px solid white;
+    color: white;
+    text-align: -webkit-center;
+}
+
+#dfa-definition {
+    display: none;
+    background: #333;
+}
+
+.content {
+    width: 80%;
+    margin: auto;
+    border: 1px solid white;
+    padding: 20px;
+}
+
+.content-title {
+    text-align: -webkit-center;
+}
+
+.mainDiv{
+    display: inline-block;
+}
+
+.center{
+    text-align: center;
 }

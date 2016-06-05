@@ -8,6 +8,7 @@ TemporaryLink.prototype.draw = function(c) {
 	c.beginPath();
 	c.moveTo(this.to.x, this.to.y);
 	c.lineTo(this.from.x, this.from.y);
+	c.strokeStyle = 'white';
 	c.stroke();
 
 	// draw the head of the arrow

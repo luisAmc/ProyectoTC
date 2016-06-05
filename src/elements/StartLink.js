@@ -41,6 +41,7 @@ StartLink.prototype.draw = function(c) {
 	c.beginPath();
 	c.moveTo(stuff.startX, stuff.startY);
 	c.lineTo(stuff.endX, stuff.endY);
+	c.strokeStyle = 'white';
 	c.stroke();
 
 	// draw the text at the end without the arrow
