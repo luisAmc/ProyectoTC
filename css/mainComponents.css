@@ -31,6 +31,11 @@ div#dfa_inputs {
     padding: 20px;
     margin-top: 200px;
 }
+div#pda_inputs {
+    padding: 20px;
+    margin-top: 200px;
+}
+
 
 #disable_canvas_button {
     height: 30px;
@@ -49,7 +54,7 @@ div#dfa_inputs {
     right: 0;
 }
 
-#input_text {
+.input_text {
     height: 30px;
     margin-right: 10px;    
     margin: auto;
@@ -94,6 +99,8 @@ div#input_animation {
     color: red;
     text-align: -webkit-center;
     display: flex;
+    margin-right: 570px;
+
 }
 
 .info {
@@ -114,6 +121,10 @@ td {
 }
 
 #dfa-definition {
+    display: none;
+    background: #333;
+}
+.pda-definition {
     display: none;
     background: #333;
 }

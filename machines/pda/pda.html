@@ -13,7 +13,7 @@
     <script type="text/javascript" src="../../src/elements/TemporaryLink.js"></script>
     <script type="text/javascript" src="../../src/elements/Pointer.js"></script>
     <script type="text/javascript" src="../../src/designer/fmsDesigner.js"></script>
-    <script type="text/javascript" src="be/dfa.js"></script>
+    <script type="text/javascript" src="be/pda.js"></script>
 </head>
 
 <body>
@@ -24,8 +24,8 @@
        </div>       
        <div>
           <ul class = "nav navbar-nav">
-             <li class = "active"><a href = "dfa.html">DFA</a></li>
-             <li><a href = "../pda/pda.html">PDA</a></li>
+             <li><a href = "../dfa/dfa.html">DFA</a></li>
+             <li class = "active"><a href = "#">PDA</a></li>
              <li><a href = "#">TM</a></li>               
           </ul>
        </div>       
@@ -34,51 +34,29 @@
     <div class="row">
         <div class="col-md-7 center">
             
-        <div id="dfa_canvas">
+        <div id="pda_canvas">
             <canvas id="canvas" width="800" height="600">
                 <span class="error">Your browser does not support<br>the HTML5 &lt;canvas&gt; element</span>
             </canvas>
-        </div>
-        <div id="input_animation">
-            <div style='text-decoration:line-through;' class="processed"></div>
-            <div class="unprocessed"></div>
-        </div>        
+        </div>       
     </div>        
         <div class="col-md-5 center">        
-            <div id="dfa_inputs">
-            <h2>Autómata Finito Determinístico</h2>
-            <input type="text" id="input_text"  name="input" class="form-control input_text" placeholder="Ingrese una cadena"><br>
-            <button type="button" id="disable_canvas_button" class="btn btn-default" onclick="disableMouseOverDFACanvas()">Procesar Cadena</button>
-            <button type="button" name="" id="showDFABtn" class="btn btn-default" onclick="showDFADefinition()">Mostrar Definición</button>
+            <div id="pda_inputs">
+            <h2>Autómata de Pila</h2>
+            <input type="text" id="input_textPDA" name="input" class="form-control input_text" placeholder="Ingrese una cadena"><br>
+            <button type="button" id="disable_canvas_buttonPDA" class="btn btn-default" onclick="">Procesar Cadena</button>
+            <button type="button" name="" id="showPDABtn" class="btn btn-default" onclick="">Mostrar Definición</button>
         </div>
         </div>
     </div>
     </div>
-    <div id="dfa-definition">
-        <button type="button" id="hideDFABtn" class="btn btn-default" onclick="hideDFADefinition()">Mostrar DFA</button>
+    <div id="pda-definition">
+        <button type="button" id="hidePDABtn" class="btn btn-default" onclick="">Mostrar PDA</button>
         <div class="content">
             <div class="content-title">
                 <h1 style="color:white"><u>Definición Formal</u></h1></div>
             <div class="content-body">
-                <h2 style="color:white">M = (Q,&nbsp;&Sigma;,&nbsp&delta;,&nbsp;q<sub>0</sub>,&nbsp;F)</h2>
-                <br>
-                <h3 class="title-info">Q = {&nbsp;<p class="states info"></p>&nbsp;}</h3>
-                <br>
-                <h3 class="title-info">&Sigma; = {&nbsp;<p class="alphabet info"></p>&nbsp;}</h3>
-                <br>
-                <h3 class="title-info">&delta;</h3>
-                <br>
-                <table class="transitions table table-condensed">
-                    <tr>
-                        <th>Estado Actual</th>
-                        <th>Símbolo</th>
-                        <th>Siguiente Estado</th>
-                    </tr>
-                </table>
-                <br>
-                <h3 class="title-info">q<sub>0</sub>&nbsp;=&nbsp;<p class="initial_state info"></p></h3>
-                <br>
-                <h3 class="title-info">F = {&nbsp; <p class="final_states info"></p>&nbsp;}</h3>
+                
             </div>
         </div>
     </div>
