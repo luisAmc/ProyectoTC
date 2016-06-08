@@ -13,7 +13,8 @@ function PDA(nodes, links) {
     }
     this.transition_table = this.createTransitionTable();
     this.alphabet = this.defineAlphabet();
-    this.stack = this.defineStack();
+    this.alphabetStack = this.definealphabetStack();
+    this.stack = null;
    // this.print();
 }
 PDA.prototype.revertAllColoring = function() {
@@ -48,12 +49,12 @@ PDA.prototype.defineAlphabet = function() {
     return alphabet;
 };
 
-PDA.prototype.defineStack = function() {
-    var stack = [];
+PDA.prototype.definealphabetStack = function() {
+    var alphabetStack = [];
     for (var index = 1; index < this.transition_table.length; index++) {
         var simbolfound = false;
-        for (var indexstack = .0; indexstack < stack.length; indexstack++) {
-            if (stack[indexstack] == this.transition_table[index][0][2]) {
+        for (var indexalphabetStack = .0; indexalphabetStack < alphabetStack.length; indexalphabetStack++) {
+            if (alphabetStack[indexalphabetStack] == this.transition_table[index][0][2]) {
                 simbolfound = true;
                 break;
             }
@@ -62,9 +63,9 @@ PDA.prototype.defineStack = function() {
 
         if (!simbolfound ){
             if(this.transition_table[index][0][2] != "" && this.transition_table[index][0][2]!=undefined){
-                stack.push(this.transition_table[index][0][2]);
+                alphabetStack.push(this.transition_table[index][0][2]);
             }else{
-                stack=[];
+                alphabetStack=[];
                 break;
             }
             
@@ -73,8 +74,8 @@ PDA.prototype.defineStack = function() {
 
     for (var index = 1; index < this.transition_table.length; index++) {
         var simbolfound = false;
-        for (var indexstack = .0; indexstack < stack.length; indexstack++) {
-            if (stack[indexstack] == this.transition_table[index][0][3]) {
+        for (var indexalphabetStack = .0; indexalphabetStack < alphabetStack.length; indexalphabetStack++) {
+            if (alphabetStack[indexalphabetStack] == this.transition_table[index][0][3]) {
                 simbolfound = true;
                 break;
             }
@@ -83,9 +84,9 @@ PDA.prototype.defineStack = function() {
 
         if (!simbolfound ){
             if(this.transition_table[index][0][3] != "" && this.transition_table[index][0][3]!=undefined){
-                stack.push(this.transition_table[index][0][3]);
+                alphabetStack.push(this.transition_table[index][0][3]);
             }else{
-                stack=[];
+                alphabetStack=[];
                 break;
             }
             
@@ -93,9 +94,9 @@ PDA.prototype.defineStack = function() {
     }
 
 
-        console.log(stack);
+        console.log(alphabetStack);
 
-    return stack;
+    return alphabetStack;
 };
 
 
@@ -226,7 +227,7 @@ function validarPDA(pda) {
                     if (pda.alphabet.length == 0 ) {
                         alert("La máquina debe tener un alfabeto. Las transiciones deben ser separadas por ';' y ser de la forma: input,pop->push");
                     } else {
-                        if(pda.stack.length ==0){
+                        if(pda.alphabetStack.length ==0){
                             alert("La máquina debe tener un alfabeto de pila. Las transiciones deben ser separadas por ';' y ser de la forma: input,pop->push");
                         }else{
 
