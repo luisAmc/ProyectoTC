@@ -33,8 +33,14 @@ PDA.prototype.defineAlphabet = function() {
             }
 
         }
-        if (!simbolfound && this.transition_table[index][0][1] != "")
-            alphabet.push(this.transition_table[index][0][1]);
+        if (!simbolfound ){
+            if(this.transition_table[index][0][1]!=undefined && this.transition_table[index][0][1] != ""){
+                alphabet.push(this.transition_table[index][0][1]);
+            }else{
+                alphabet=[];
+                break;
+            }
+        }
     }
 
     // console.log(alphabet);
@@ -54,8 +60,15 @@ PDA.prototype.defineStack = function() {
 
         }
 
-        if (!simbolfound && this.transition_table[index][0][2] != "")
-            stack.push(this.transition_table[index][0][2]);
+        if (!simbolfound ){
+            if(this.transition_table[index][0][2] != "" && this.transition_table[index][0][2]!=undefined){
+                stack.push(this.transition_table[index][0][2]);
+            }else{
+                stack=[];
+                break;
+            }
+            
+        }
     }
 
     for (var index = 1; index < this.transition_table.length; index++) {
@@ -68,8 +81,15 @@ PDA.prototype.defineStack = function() {
 
         }
 
-        if (!simbolfound && this.transition_table[index][0][3] != "")
-            stack.push(this.transition_table[index][0][3]);
+        if (!simbolfound ){
+            if(this.transition_table[index][0][3] != "" && this.transition_table[index][0][3]!=undefined){
+                stack.push(this.transition_table[index][0][3]);
+            }else{
+                stack=[];
+                break;
+            }
+            
+        }
     }
 
 
@@ -101,11 +121,11 @@ PDA.prototype.createTransitionTable = function() {
 
             if (new_transition.length > 1) { //Cuando las transiciones estan separadas por punto y coma que las guarde por separado igual que las demás....
                 for (var indexnew = 0; indexnew < new_transition.length; indexnew++){
-                    var new_transitiondivide = this.divideTransition(new_transition[index]);
+                    var new_transitiondivide = this.divideTransition(new_transition[indexnew]);
                     transition_table.push(new_transitiondivide);
                 }
             } else {
-                var new_transitiondivide = this.divideTransition(new_transition);
+                var new_transitiondivide = this.divideTransition(new_transition[0]);
                 transition_table.push(new_transitiondivide);
             }
 
@@ -119,9 +139,9 @@ PDA.prototype.createTransitionTable = function() {
 
 PDA.prototype.divideTransition = function(transition){
     var ret_val =[];
-    var push = transition[0][1].split("->");
+    var push = transition[1].split("->");
     var input_pop = push[0].split(",");
-    ret_val.push([transition[0][0], input_pop[0], input_pop[1], push[1] ,transition[0][2]]);
+    ret_val.push([transition[0], input_pop[0], input_pop[1], push[1] ,transition[2]]);
 
     return ret_val;
 };
@@ -143,10 +163,102 @@ PDA.prototype.getStartTransition = function() {
     return null;
 };
 
+PDA.prototype.getStartTransition = function() {
+    for (var index = 0; index < this.transitions.length; index++)
+        if (this.transitions[index] instanceof StartLink)
+            return this.transitions[index];
+
+    return null;
+};
+
+
 function disableMouseOverPDACanvas() {
 
     var pda = new PDA(nodes, links);
     pda.revertAllColoring();
-
+    
+    if (validarPDA(pda)) {
+        canvas.onmousedown = function(e) {};
+        canvas.ondblclick = function(e) {};
+        canvas.onmousemove = function(e) {};
+        canvas.onmouseup = function(e) {};
+        //$("#input_animation .processed").text("");
+        //$("#input_animation .unprocessed").text(document.getElementById('input_text').value);
+        //pda.evaluateString(document.getElementById('input_text').value);
+    }
+    
     
 };
+
+function validarPDA(pda) {
+
+    if (pda.states.length == 0) {
+        alert("La máquina no se ha definido");
+    } else {
+        var estadosetiquetados = true;
+        for (index = 0; index < pda.states.length; index++) {
+            if (pda.states[index].text == "") {
+                alert("La máquina debe tener todos sus estados etiquetados");
+                estadosetiquetados = false;
+                break;
+            }
+        }
+
+        if (estadosetiquetados) {
+            var etiquetasdiferentes = true;
+            for (index = 0; index < pda.states.length - 1; index++) {
+                for (index2 = index + 1; index2 < pda.states.length; index2++) {
+                    if (pda.states[index].text == pda.states[index2].text) {
+                        alert("Los estados deben tener etiquetas diferentes");
+                        etiquetasdiferentes = false;
+                        break;
+                    }
+                }
+
+                if (!etiquetasdiferentes)
+                    break;
+            }
+
+            if (etiquetasdiferentes) {
+                if (pda.transition_table.length == 1) {
+                    alert("La máquina debe tener transiciones");
+                } else {
+                    if (pda.alphabet.length == 0 ) {
+                        alert("La máquina debe tener un alfabeto. Las transiciones deben ser separadas por ';' y ser de la forma: input,pop->push");
+                    } else {
+                        if(pda.stack.length ==0){
+                            alert("La máquina debe tener un alfabeto de pila. Las transiciones deben ser separadas por ';' y ser de la forma: input,pop->push");
+                        }else{
+
+                            if (pda.initial_state == null) {
+                                alert("La máquina debe tener un estado inicial");
+
+                            } else {
+
+                                if (pda.final_states.length == 0) {
+                                    alert("La máquina debe tener al menos un estado final");
+                                } else {
+                                        var espda = true;
+                                       
+                                        if (espda) {
+                                            return true;
+                                        }
+                                    
+                                }
+                        }
+
+                        }
+
+
+                        
+                    }
+                }
+
+            }
+
+        }
+
+    }
+
+
+}
