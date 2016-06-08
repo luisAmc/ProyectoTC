@@ -12,15 +12,72 @@ function PDA(nodes, links) {
         }
     }
     this.transition_table = this.createTransitionTable();
-    this.alphabet = null;
-    this.stack = null;
-    this.print();
+    this.alphabet = this.defineAlphabet();
+    this.stack = this.defineStack();
+   // this.print();
 }
 PDA.prototype.revertAllColoring = function() {
     for (var i = 0; i < this.states.length; i++) {
         this.states[i].animate("white", 30);
     }
 }
+
+PDA.prototype.defineAlphabet = function() {
+    var alphabet = [];
+    for (var index = 1; index < this.transition_table.length; index++) {
+        var simbolfound = false;
+        for (var indexalphabet = .0; indexalphabet < alphabet.length; indexalphabet++) {
+            if (alphabet[indexalphabet] == this.transition_table[index][0][1]) {
+                simbolfound = true;
+                break;
+            }
+
+        }
+        if (!simbolfound && this.transition_table[index][0][1] != "")
+            alphabet.push(this.transition_table[index][0][1]);
+    }
+
+    // console.log(alphabet);
+
+    return alphabet;
+};
+
+PDA.prototype.defineStack = function() {
+    var stack = [];
+    for (var index = 1; index < this.transition_table.length; index++) {
+        var simbolfound = false;
+        for (var indexstack = .0; indexstack < stack.length; indexstack++) {
+            if (stack[indexstack] == this.transition_table[index][0][2]) {
+                simbolfound = true;
+                break;
+            }
+
+        }
+
+        if (!simbolfound && this.transition_table[index][0][2] != "")
+            stack.push(this.transition_table[index][0][2]);
+    }
+
+    for (var index = 1; index < this.transition_table.length; index++) {
+        var simbolfound = false;
+        for (var indexstack = .0; indexstack < stack.length; indexstack++) {
+            if (stack[indexstack] == this.transition_table[index][0][3]) {
+                simbolfound = true;
+                break;
+            }
+
+        }
+
+        if (!simbolfound && this.transition_table[index][0][3] != "")
+            stack.push(this.transition_table[index][0][3]);
+    }
+
+
+        console.log(stack);
+
+    return stack;
+};
+
 
 PDA.prototype.createTransitionTable = function() {
     var transition_table = [];
@@ -62,9 +119,9 @@ PDA.prototype.createTransitionTable = function() {
 
 PDA.prototype.divideTransition = function(transition){
     var ret_val =[];
-    var push = transition[1].split("->");
+    var push = transition[0][1].split("->");
     var input_pop = push[0].split(",");
-    ret_val.push([transition[0], input_pop[0], input_pop[1], push[1] ,transition[2]]);
+    ret_val.push([transition[0][0], input_pop[0], input_pop[1], push[1] ,transition[0][2]]);
 
     return ret_val;
 };
