@@ -1,6 +1,8 @@
 function PDA(nodes, links) {
     this.states = nodes.slice();
     this.transitions = links.slice();
+    //console.log("transiciones");
+    //console.log(this.transitions);
     this.initial_state = null; // No importa si esta en null, va a pasar por la validación antes de recorrer w
     try {
         this.initial_state = this.getStartTransition().node; //nodes[0];
@@ -14,8 +16,196 @@ function PDA(nodes, links) {
     this.transition_table = this.createTransitionTable();
     this.alphabet = this.defineAlphabet();
     this.alphabetStack = this.definealphabetStack();
-    this.stack = null;
+    this.stack = new Array();
    // this.print();
+   //console.log(this.transitions);
+}
+
+PDA.prototype.evaluateString = function (input) {
+	var currentNode = this.initial_state;
+	var nodePath = [];
+    var transitionPath = [];
+    var termina = false;
+    var rechazo = false;
+	for (var currentLetter = 0; currentLetter < input.length; currentLetter++) {
+		var salirFor = false;
+		var recorridoTransiciones = 0;
+		for (var i = 0; i < this.transitions.length; i++) {
+			var current_transition = this.transitions[i];
+			if (current_transition instanceof StartLink)
+				continue;
+            var simbols = current_transition.text.split(';');
+           	//console.log(simbols);
+            for (var searchsimbol = 0; searchsimbol < simbols.length; searchsimbol++) {
+            	var firstTransitionDivision;
+            	if(current_transition instanceof Link)
+            		firstTransitionDivision = [current_transition.nodeA.text,simbols[searchsimbol],current_transition.nodeB.text];
+            	else
+            		firstTransitionDivision = [current_transition.node.text,simbols[searchsimbol],current_transition.node.text];
+            	//console.log("Primera division");
+            	//console.log(firstTransitionDivision);
+            	var currentDividedTransition = this.divideTransition(firstTransitionDivision);//divide el input, pop y push
+            	currentDividedTransition = currentDividedTransition[0];
+            	//console.log("input actual: "+input.charAt(currentLetter)+" posicion: "+currentLetter);
+            	//console.log(currentDividedTransition);
+            	//console.log("caracter current transition: "+currentDividedTransition[1]);
+            	//console.log("estado actual: "+currentNode.text);
+                if (currentDividedTransition[1] == input.charAt(currentLetter) || currentDividedTransition[1] == 'E') {//si el input coincide                	
+	                if(!(current_transition instanceof StartLink)){//que no sea un start link
+	                	var current_transitionNodeText;
+	                	if(current_transition instanceof SelfLink){
+	                		current_transitionNodeText = current_transition.node.text;
+	                	}else{
+							current_transitionNodeText = current_transition.nodeA.text;
+	                	}
+	                	if(current_transitionNodeText == currentNode.text){//si el nodo coincide
+	                    	if(currentDividedTransition[2] != 'E'){//si el pop no es null
+	                    		//console.log("popea: "+this.stack[this.stack.length-1]);
+	                    		if(currentDividedTransition[2] == this.stack[this.stack.length-1]){//si el pop coincide
+	                    			
+	                    			nodePath.push(currentNode);
+	                    			transitionPath.push(current_transition);
+	                    			this.stack.pop();
+	                    			if(currentDividedTransition[3] != 'E'){
+	                    				this.stack.push(currentDividedTransition[3]);
+	                    				//console.log("pushea: "+currentDividedTransition[3]);
+	                    			}
+	                    			if(current_transition instanceof Link){//si no es un self link
+	                    				currentNode = current_transition.nodeB;
+	                    				//console.log("cambia estado");
+	                    			}else{
+	                    				//console.log("mismo estado");
+	                    			}
+	                    			if(currentDividedTransition[1] == 'E')
+	                    				currentLetter--;
+	                    			salirFor = true;
+	                    			break;
+	                    		}else{//si lee un input y el pop no coincide rechaza
+	                    			salirFor = true;
+	                    			termina = true;
+	                    			rechazo = true;
+	                    		}
+	                    	}else{//no importa lo que este en la pila
+	                    		//console.log("cambia estado");
+	                    		nodePath.push(currentNode);
+	                    		transitionPath.push(current_transition);
+	                    		if(currentDividedTransition[3] != 'E'){
+	                    			this.stack.push(currentDividedTransition[3]);
+	                    			//console.log("pushea: "+currentDividedTransition[3]);
+	                    		}
+	                    		if(current_transition instanceof Link){//si no es un self link
+	                    			currentNode = current_transition.nodeB;
+	                    			//console.log("cambia estado");
+                    			}else{
+	                    			//console.log("mismo estado");
+	                    		}
+                    			if(currentDividedTransition[1] == 'E')
+	                    				currentLetter--;
+                    			salirFor = true;
+                    			break;
+	                    	}
+	                    }
+                	}
+                }
+                if(salirFor)
+            		break;
+            }
+            if(salirFor)
+            	break;
+            recorridoTransiciones++;
+            if(recorridoTransiciones == this.transitions.length){              	
+            	termina = true;         		
+            	
+            }
+		}
+		if(termina)
+			break;
+	}
+	if(!rechazo){	
+		var hayTransicionE = true;
+		console.log("Transiciones E");
+		while(hayTransicionE){//ciclo para evaluar si hay transiciones epsilon en el ultimo estado
+			var salirFor = false;
+			for (var i = 0; i < this.transitions.length; i++) {
+				var current_transition = this.transitions[i];
+				if (current_transition instanceof StartLink)
+					continue;
+	            var simbols = current_transition.text.split(';');
+	           	//console.log(simbols);
+	            for (var searchsimbol = 0; searchsimbol < simbols.length; searchsimbol++) {
+	            	var firstTransitionDivision;
+	            	if(current_transition instanceof Link)
+	            		firstTransitionDivision = [current_transition.nodeA.text,simbols[searchsimbol],current_transition.nodeB.text];
+	            	else
+	            		firstTransitionDivision = [current_transition.node.text,simbols[searchsimbol],current_transition.node.text];
+	            	var currentDividedTransition = this.divideTransition(firstTransitionDivision);//divide el input, pop y push
+	            	currentDividedTransition = currentDividedTransition[0];
+	                if (currentDividedTransition[1] == 'E') {
+	                	if(!(current_transition instanceof StartLink)){//que no sea un start link
+		                	var current_transitionNodeText;
+		                	if(current_transition instanceof SelfLink){
+		                		current_transitionNodeText = current_transition.node.text;
+		                	}else{
+								current_transitionNodeText = current_transition.nodeA.text;
+		                	}
+		                	if(current_transitionNodeText == currentNode.text){//si el nodo coincide
+		                    	if(currentDividedTransition[2] != 'E'){//si el pop no es null
+		                    		//console.log("popea: "+this.stack[this.stack.length-1]);
+		                    		if(currentDividedTransition[2] == this.stack[this.stack.length-1]){//si el pop coincide
+		                    			
+		                    			nodePath.push(currentNode);
+		                    			transitionPath.push(current_transition);
+		                    			this.stack.pop();
+		                    			if(currentDividedTransition[3] != 'E'){
+		                    				this.stack.push(currentDividedTransition[3]);
+		                    				//console.log("pushea: "+currentDividedTransition[3]);
+		                    			}
+		                    			if(current_transition instanceof Link){//si no es un self link
+		                    				currentNode = current_transition.nodeB;
+		                    				//console.log("cambia estado");
+		                    			}
+		                    			salirFor = true;
+		                    			break;
+		                    		}
+		                    	}else{//no importa lo que este en la pila
+		                    		//console.log("cambia estado");
+		                    		nodePath.push(currentNode);
+		                    		transitionPath.push(current_transition);
+		                    		if(currentDividedTransition[3] != 'E'){
+		                    			this.stack.push(currentDividedTransition[3]);
+		                    			//console.log("pushea: "+currentDividedTransition[3]);
+		                    		}
+		                    		if(current_transition instanceof Link){//si no es un self link
+		                    			currentNode = current_transition.nodeB;
+		                    			//console.log("cambia estado");
+	                    			}
+	                    			salirFor = true;
+	                    			break;
+		                    	}
+		                    }
+	                	}
+	                }
+	                if(salirFor)
+	            		break;
+	            }
+	            if(salirFor)
+	            	break;
+	            recorridoTransiciones++;
+	            if(recorridoTransiciones == this.transitions.length){ 
+	            	hayTransicionE = false;
+	            }
+	        }
+		}
+	}
+	nodePath.push(currentNode);//agregar el ultimo nodo en que se quedo
+	if(currentNode.isAcceptState)
+		console.log("Acepta");
+	else
+		console.log("Rechaza");
+	console.log("Nodos");
+	console.log(nodePath);
+	console.log("Transiciones");
+	console.log(transitionPath);
 }
 PDA.prototype.revertAllColoring = function() {
     for (var i = 0; i < this.states.length; i++) {
@@ -94,7 +284,7 @@ PDA.prototype.definealphabetStack = function() {
     }
 
 
-        console.log(alphabetStack);
+        //console.log(alphabetStack);
 
     return alphabetStack;
 };
@@ -134,7 +324,7 @@ PDA.prototype.createTransitionTable = function() {
     }
 
 
-    console.log(transition_table);
+    //console.log(transition_table);
     return transition_table;
 };
 
@@ -143,7 +333,7 @@ PDA.prototype.divideTransition = function(transition){
     var push = transition[1].split("->");
     var input_pop = push[0].split(",");
     ret_val.push([transition[0], input_pop[0], input_pop[1], push[1] ,transition[2]]);
-
+    //console.log("divide: "+ret_val);
     return ret_val;
 };
 
@@ -187,7 +377,7 @@ function disableMouseOverPDACanvas() {
         //$("#input_animation .unprocessed").text(document.getElementById('input_text').value);
         //pda.evaluateString(document.getElementById('input_text').value);
     }
-    
+    pda.evaluateString(document.getElementById('input_textPDA').value);
     
 };
 
