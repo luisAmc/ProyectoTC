@@ -16,196 +16,237 @@ function PDA(nodes, links) {
     this.transition_table = this.createTransitionTable();
     this.alphabet = this.defineAlphabet();
     this.alphabetStack = this.definealphabetStack();
+    this.posiblePaths = [];
     this.stack = new Array();
-   // this.print();
-   //console.log(this.transitions);
+    // this.print();
+    //console.log(this.transitions);
 }
+PDA.prototype.buildPath = function(path, fromNode) {
 
-PDA.prototype.evaluateString = function (input) {
-	var currentNode = this.initial_state;
-	var nodePath = [];
+    for (var j = 0; j < this.transitions.length; j++) {
+        var transitionFrom, transitionTo;
+        if (this.transitions[j] instanceof SelfLink || this.transitions[j] instanceof StartLink) {
+            transitionFrom = this.transitions[j].node.text;
+            transitionTo = this.transitions[j].node.text;
+        } else {
+            transitionFrom = this.transitions[j].nodeA.text;
+            transitionTo = this.transitions[j].nodeB.text;
+        }
+        if (transitionFrom === fromNode) {
+            var simbols = this.transitions[j].text.split(";");
+            for (var k = 0; k < simbols.length; k++) {
+                if (simbols[k].split(",")[0] === "E") {
+
+                    var transitionsTemp = jQuery.extend(true, [], path.transitions);
+                    transitionsTemp.push(this.transitions[j]);
+                    path.branches[transitionTo + ";" + k] = this.buildPath({ input: path.input, branches: {}, transitions: transitionsTemp }, transitionTo);
+                    path.branches[transitionTo + ";" + k].transitions = transitionsTemp;
+
+                } else {
+                    if (path.input !== "") {
+                        if (simbols[k].split(",")[0] === path.input[0]) {
+                            var transitionsTemp = jQuery.extend(true, [], path.transitions);
+                            transitionsTemp.push(this.transitions[j]);
+                            path.branches[transitionTo + ";" + k] = this.buildPath({ input: path.input.substr(1), branches: {}, transitions: transitionsTemp }, transitionTo);
+
+                            path.branches[transitionTo + ";" + k].transitions = transitionsTemp;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    path.hasBranches = Object.keys(path.branches).length > 0;
+    if(!path.hasBranches){
+        this.posiblePaths.push(path.transitions);
+    }
+    return path;
+
+}
+PDA.prototype.evaluateString = function(input, pathTransitions) {
+    var currentNode = this.initial_state;
+    var nodePath = [];
     var transitionPath = [];
     var termina = false;
     var rechazo = false;
-	for (var currentLetter = 0; currentLetter < input.length; currentLetter++) {
-		var salirFor = false;
-		var recorridoTransiciones = 0;
-		for (var i = 0; i < this.transitions.length; i++) {
-			var current_transition = this.transitions[i];
-			if (current_transition instanceof StartLink)
-				continue;
+
+    for (var currentLetter = 0; currentLetter < input.length; currentLetter++) {
+        var salirFor = false;
+        var recorridoTransiciones = 0;
+        for (var i = 0; i < pathTransitions.length; i++) {
+            var current_transition = pathTransitions[i];
+            if (current_transition instanceof StartLink)
+                continue;
             var simbols = current_transition.text.split(';');
-           	//console.log(simbols);
             for (var searchsimbol = 0; searchsimbol < simbols.length; searchsimbol++) {
-            	var firstTransitionDivision;
-            	if(current_transition instanceof Link)
-            		firstTransitionDivision = [current_transition.nodeA.text,simbols[searchsimbol],current_transition.nodeB.text];
-            	else
-            		firstTransitionDivision = [current_transition.node.text,simbols[searchsimbol],current_transition.node.text];
-            	//console.log("Primera division");
-            	//console.log(firstTransitionDivision);
-            	var currentDividedTransition = this.divideTransition(firstTransitionDivision);//divide el input, pop y push
-            	currentDividedTransition = currentDividedTransition[0];
-            	//console.log("input actual: "+input.charAt(currentLetter)+" posicion: "+currentLetter);
-            	//console.log(currentDividedTransition);
-            	//console.log("caracter current transition: "+currentDividedTransition[1]);
-            	//console.log("estado actual: "+currentNode.text);
-                if (currentDividedTransition[1] == input.charAt(currentLetter) || currentDividedTransition[1] == 'E') {//si el input coincide                	
-	                if(!(current_transition instanceof StartLink)){//que no sea un start link
-	                	var current_transitionNodeText;
-	                	if(current_transition instanceof SelfLink){
-	                		current_transitionNodeText = current_transition.node.text;
-	                	}else{
-							current_transitionNodeText = current_transition.nodeA.text;
-	                	}
-	                	if(current_transitionNodeText == currentNode.text){//si el nodo coincide
-	                    	if(currentDividedTransition[2] != 'E'){//si el pop no es null
-	                    		//console.log("popea: "+this.stack[this.stack.length-1]);
-	                    		if(currentDividedTransition[2] == this.stack[this.stack.length-1]){//si el pop coincide
-	                    			
-	                    			nodePath.push(currentNode);
-	                    			transitionPath.push(current_transition);
-	                    			this.stack.pop();
-	                    			if(currentDividedTransition[3] != 'E'){
-	                    				this.stack.push(currentDividedTransition[3]);
-	                    				//console.log("pushea: "+currentDividedTransition[3]);
-	                    			}
-	                    			if(current_transition instanceof Link){//si no es un self link
-	                    				currentNode = current_transition.nodeB;
-	                    				//console.log("cambia estado");
-	                    			}else{
-	                    				//console.log("mismo estado");
-	                    			}
-	                    			if(currentDividedTransition[1] == 'E')
-	                    				currentLetter--;
-	                    			salirFor = true;
-	                    			break;
-	                    		}else{//si lee un input y el pop no coincide rechaza
-	                    			salirFor = true;
-	                    			termina = true;
-	                    			rechazo = true;
-	                    		}
-	                    	}else{//no importa lo que este en la pila
-	                    		//console.log("cambia estado");
-	                    		nodePath.push(currentNode);
-	                    		transitionPath.push(current_transition);
-	                    		if(currentDividedTransition[3] != 'E'){
-	                    			this.stack.push(currentDividedTransition[3]);
-	                    			//console.log("pushea: "+currentDividedTransition[3]);
-	                    		}
-	                    		if(current_transition instanceof Link){//si no es un self link
-	                    			currentNode = current_transition.nodeB;
-	                    			//console.log("cambia estado");
-                    			}else{
-	                    			//console.log("mismo estado");
-	                    		}
-                    			if(currentDividedTransition[1] == 'E')
-	                    				currentLetter--;
-                    			salirFor = true;
-                    			break;
-	                    	}
-	                    }
-                	}
+                var firstTransitionDivision;
+                if (current_transition instanceof Link)
+                    firstTransitionDivision = [current_transition.nodeA.text, simbols[searchsimbol], current_transition.nodeB.text];
+                else
+                    firstTransitionDivision = [current_transition.node.text, simbols[searchsimbol], current_transition.node.text];
+                var currentDividedTransition = this.divideTransition(firstTransitionDivision); //divide el input, pop y push
+                currentDividedTransition = currentDividedTransition[0];
+
+                if (currentDividedTransition[1] == input.charAt(currentLetter) || currentDividedTransition[1] == 'E') { //si el input coincide                  
+                    if (!(current_transition instanceof StartLink)) { //que no sea un start link
+                        var current_transitionNodeText;
+                        if (current_transition instanceof SelfLink) {
+                            current_transitionNodeText = current_transition.node.text;
+                        } else {
+                            current_transitionNodeText = current_transition.nodeA.text;
+                        }
+                        if (current_transitionNodeText == currentNode.text) { //si el nodo coincide
+                            if (currentDividedTransition[2] != 'E') { //si el pop no es null
+                                if (currentDividedTransition[2] == this.stack[this.stack.length - 1]) { //si el pop coincide
+
+                                    nodePath.push(currentNode);
+                                    transitionPath.push(current_transition);
+                                    this.stack.pop();
+                                    if (currentDividedTransition[3] != 'E') {
+                                        this.stack.push(currentDividedTransition[3])
+                                    }
+                                    if (current_transition instanceof Link) { //si no es un self link
+                                        currentNode = current_transition.nodeB;
+                                    } else {
+
+                                    }
+                                    if (currentDividedTransition[1] == 'E')
+                                        currentLetter--;
+                                    salirFor = true;
+                                    break;
+                                } else { //si lee un input y el pop no coincide rechaza
+                                    salirFor = true;
+                                    termina = true;
+                                    rechazo = true;
+                                }
+                            } else { //no importa lo que este en la pila
+                                //console.log("cambia estado");
+                                nodePath.push(currentNode);
+                                transitionPath.push(current_transition);
+                                if (currentDividedTransition[3] != 'E') {
+                                    this.stack.push(currentDividedTransition[3]);
+                                    //console.log("pushea: "+currentDividedTransition[3]);
+                                }
+                                if (current_transition instanceof Link) { //si no es un self link
+                                    currentNode = current_transition.nodeB;
+                                    //console.log("cambia estado");
+                                } else {
+                                    //console.log("mismo estado");
+                                }
+                                if (currentDividedTransition[1] == 'E')
+                                    currentLetter--;
+                                salirFor = true;
+                                break;
+                            }
+                        }
+                    }
                 }
-                if(salirFor)
-            		break;
+                if (salirFor)
+                    break;
             }
-            if(salirFor)
-            	break;
+            if (salirFor)
+                break;
             recorridoTransiciones++;
-            if(recorridoTransiciones == this.transitions.length){              	
-            	termina = true;         		
-            	
+            if (recorridoTransiciones == pathTransitions.length) {
+                termina = true;
+
             }
-		}
-		if(termina)
-			break;
-	}
-	if(!rechazo){	
-		var hayTransicionE = true;
-		console.log("Transiciones E");
-		while(hayTransicionE){//ciclo para evaluar si hay transiciones epsilon en el ultimo estado
-			var salirFor = false;
-			for (var i = 0; i < this.transitions.length; i++) {
-				var current_transition = this.transitions[i];
-				if (current_transition instanceof StartLink)
-					continue;
-	            var simbols = current_transition.text.split(';');
-	           	//console.log(simbols);
-	            for (var searchsimbol = 0; searchsimbol < simbols.length; searchsimbol++) {
-	            	var firstTransitionDivision;
-	            	if(current_transition instanceof Link)
-	            		firstTransitionDivision = [current_transition.nodeA.text,simbols[searchsimbol],current_transition.nodeB.text];
-	            	else
-	            		firstTransitionDivision = [current_transition.node.text,simbols[searchsimbol],current_transition.node.text];
-	            	var currentDividedTransition = this.divideTransition(firstTransitionDivision);//divide el input, pop y push
-	            	currentDividedTransition = currentDividedTransition[0];
-	                if (currentDividedTransition[1] == 'E') {
-	                	if(!(current_transition instanceof StartLink)){//que no sea un start link
-		                	var current_transitionNodeText;
-		                	if(current_transition instanceof SelfLink){
-		                		current_transitionNodeText = current_transition.node.text;
-		                	}else{
-								current_transitionNodeText = current_transition.nodeA.text;
-		                	}
-		                	if(current_transitionNodeText == currentNode.text){//si el nodo coincide
-		                    	if(currentDividedTransition[2] != 'E'){//si el pop no es null
-		                    		//console.log("popea: "+this.stack[this.stack.length-1]);
-		                    		if(currentDividedTransition[2] == this.stack[this.stack.length-1]){//si el pop coincide
-		                    			
-		                    			nodePath.push(currentNode);
-		                    			transitionPath.push(current_transition);
-		                    			this.stack.pop();
-		                    			if(currentDividedTransition[3] != 'E'){
-		                    				this.stack.push(currentDividedTransition[3]);
-		                    				//console.log("pushea: "+currentDividedTransition[3]);
-		                    			}
-		                    			if(current_transition instanceof Link){//si no es un self link
-		                    				currentNode = current_transition.nodeB;
-		                    				//console.log("cambia estado");
-		                    			}
-		                    			salirFor = true;
-		                    			break;
-		                    		}
-		                    	}else{//no importa lo que este en la pila
-		                    		//console.log("cambia estado");
-		                    		nodePath.push(currentNode);
-		                    		transitionPath.push(current_transition);
-		                    		if(currentDividedTransition[3] != 'E'){
-		                    			this.stack.push(currentDividedTransition[3]);
-		                    			//console.log("pushea: "+currentDividedTransition[3]);
-		                    		}
-		                    		if(current_transition instanceof Link){//si no es un self link
-		                    			currentNode = current_transition.nodeB;
-		                    			//console.log("cambia estado");
-	                    			}
-	                    			salirFor = true;
-	                    			break;
-		                    	}
-		                    }
-	                	}
-	                }
-	                if(salirFor)
-	            		break;
-	            }
-	            if(salirFor)
-	            	break;
-	            recorridoTransiciones++;
-	            if(recorridoTransiciones == this.transitions.length){ 
-	            	hayTransicionE = false;
-	            }
-	        }
-		}
-	}
-	nodePath.push(currentNode);//agregar el ultimo nodo en que se quedo
-	if(currentNode.isAcceptState)
-		console.log("Acepta");
-	else
-		console.log("Rechaza");
-	console.log("Nodos");
-	console.log(nodePath);
-	console.log("Transiciones");
-	console.log(transitionPath);
+        }
+        if (termina)
+            break;
+    }
+    if (!rechazo) {
+        var hayTransicionE = true;
+        console.log("Transiciones E");
+        while (hayTransicionE) { //ciclo para evaluar si hay transiciones epsilon en el ultimo estado
+            var salirFor = false;
+            for (var i = 0; i < pathTransitions.length; i++) {
+                var current_transition = pathTransitions[i];
+                if (current_transition instanceof StartLink)
+                    continue;
+                var simbols = current_transition.text.split(';');
+                //console.log(simbols);
+                for (var searchsimbol = 0; searchsimbol < simbols.length; searchsimbol++) {
+                    var firstTransitionDivision;
+                    if (current_transition instanceof Link)
+                        firstTransitionDivision = [current_transition.nodeA.text, simbols[searchsimbol], current_transition.nodeB.text];
+                    else
+                        firstTransitionDivision = [current_transition.node.text, simbols[searchsimbol], current_transition.node.text];
+                    var currentDividedTransition = this.divideTransition(firstTransitionDivision); //divide el input, pop y push
+                    currentDividedTransition = currentDividedTransition[0];
+                    if (currentDividedTransition[1] == 'E') {
+                        if (!(current_transition instanceof StartLink)) { //que no sea un start link
+                            var current_transitionNodeText;
+                            if (current_transition instanceof SelfLink) {
+                                current_transitionNodeText = current_transition.node.text;
+                            } else {
+                                current_transitionNodeText = current_transition.nodeA.text;
+                            }
+                            if (current_transitionNodeText == currentNode.text) { //si el nodo coincide
+                                if (currentDividedTransition[2] != 'E') { //si el pop no es null
+                                    //console.log("popea: "+this.stack[this.stack.length-1]);
+                                    if (currentDividedTransition[2] == this.stack[this.stack.length - 1]) { //si el pop coincide
+
+                                        nodePath.push(currentNode);
+                                        transitionPath.push(current_transition);
+                                        this.stack.pop();
+                                        if (currentDividedTransition[3] != 'E') {
+                                            this.stack.push(currentDividedTransition[3]);
+                                            //console.log("pushea: "+currentDividedTransition[3]);
+                                        }
+                                        if (current_transition instanceof Link) { //si no es un self link
+                                            currentNode = current_transition.nodeB;
+                                            //console.log("cambia estado");
+                                        }
+                                        salirFor = true;
+                                        break;
+                                    }
+                                } else { //no importa lo que este en la pila
+                                    //console.log("cambia estado");
+                                    nodePath.push(currentNode);
+                                    transitionPath.push(current_transition);
+                                    if (currentDividedTransition[3] != 'E') {
+                                        this.stack.push(currentDividedTransition[3]);
+                                        //console.log("pushea: "+currentDividedTransition[3]);
+                                    }
+                                    if (current_transition instanceof Link) { //si no es un self link
+                                        currentNode = current_transition.nodeB;
+                                        //console.log("cambia estado");
+                                    }
+                                    salirFor = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    if (salirFor)
+                        break;
+                }
+                if (salirFor)
+                    break;
+                recorridoTransiciones++;
+                if (recorridoTransiciones == pathTransitions.length) {
+                    hayTransicionE = false;
+                }
+            }
+        }
+    }
+    nodePath.push(currentNode); //agregar el ultimo nodo en que se quedo
+    if (currentNode.isAcceptState){
+
+        console.log("Acepta");
+        return true;
+    }
+
+    else{
+
+        console.log("Rechaza");
+        return false;
+    }
+    console.log("Nodos");
+    console.log(nodePath);
+    console.log("Transiciones");
+    console.log(transitionPath);
 }
 PDA.prototype.revertAllColoring = function() {
     for (var i = 0; i < this.states.length; i++) {
@@ -224,11 +265,11 @@ PDA.prototype.defineAlphabet = function() {
             }
 
         }
-        if (!simbolfound ){
-            if(this.transition_table[index][0][1]!=undefined && this.transition_table[index][0][1] != ""){
+        if (!simbolfound) {
+            if (this.transition_table[index][0][1] != undefined && this.transition_table[index][0][1] != "") {
                 alphabet.push(this.transition_table[index][0][1]);
-            }else{
-                alphabet=[];
+            } else {
+                alphabet = [];
                 break;
             }
         }
@@ -251,14 +292,14 @@ PDA.prototype.definealphabetStack = function() {
 
         }
 
-        if (!simbolfound ){
-            if(this.transition_table[index][0][2] != "" && this.transition_table[index][0][2]!=undefined){
+        if (!simbolfound) {
+            if (this.transition_table[index][0][2] != "" && this.transition_table[index][0][2] != undefined) {
                 alphabetStack.push(this.transition_table[index][0][2]);
-            }else{
-                alphabetStack=[];
+            } else {
+                alphabetStack = [];
                 break;
             }
-            
+
         }
     }
 
@@ -272,19 +313,19 @@ PDA.prototype.definealphabetStack = function() {
 
         }
 
-        if (!simbolfound ){
-            if(this.transition_table[index][0][3] != "" && this.transition_table[index][0][3]!=undefined){
+        if (!simbolfound) {
+            if (this.transition_table[index][0][3] != "" && this.transition_table[index][0][3] != undefined) {
                 alphabetStack.push(this.transition_table[index][0][3]);
-            }else{
-                alphabetStack=[];
+            } else {
+                alphabetStack = [];
                 break;
             }
-            
+
         }
     }
 
 
-        //console.log(alphabetStack);
+    //console.log(alphabetStack);
 
     return alphabetStack;
 };
@@ -311,7 +352,7 @@ PDA.prototype.createTransitionTable = function() {
                 new_transition = this.getTransitions(current_transition.text, current_transition.node.text, current_transition.node.text);
 
             if (new_transition.length > 1) { //Cuando las transiciones estan separadas por punto y coma que las guarde por separado igual que las demás....
-                for (var indexnew = 0; indexnew < new_transition.length; indexnew++){
+                for (var indexnew = 0; indexnew < new_transition.length; indexnew++) {
                     var new_transitiondivide = this.divideTransition(new_transition[indexnew]);
                     transition_table.push(new_transitiondivide);
                 }
@@ -328,11 +369,11 @@ PDA.prototype.createTransitionTable = function() {
     return transition_table;
 };
 
-PDA.prototype.divideTransition = function(transition){
-    var ret_val =[];
+PDA.prototype.divideTransition = function(transition) {
+    var ret_val = [];
     var push = transition[1].split("->");
     var input_pop = push[0].split(",");
-    ret_val.push([transition[0], input_pop[0], input_pop[1], push[1] ,transition[2]]);
+    ret_val.push([transition[0], input_pop[0], input_pop[1], push[1], transition[2]]);
     //console.log("divide: "+ret_val);
     return ret_val;
 };
@@ -367,7 +408,7 @@ function disableMouseOverPDACanvas() {
 
     var pda = new PDA(nodes, links);
     pda.revertAllColoring();
-    
+
     if (validarPDA(pda)) {
         canvas.onmousedown = function(e) {};
         canvas.ondblclick = function(e) {};
@@ -377,8 +418,15 @@ function disableMouseOverPDACanvas() {
         //$("#input_animation .unprocessed").text(document.getElementById('input_text').value);
         //pda.evaluateString(document.getElementById('input_text').value);
     }
-    pda.evaluateString(document.getElementById('input_textPDA').value);
+    pda.posiblePaths = [];
+    var allPaths = pda.buildPath({ input: document.getElementById('input_textPDA').value, branches: {}, transitions: [] }, pda.initial_state.text);
+    for(var i = 0 ; i < pda.posiblePaths.length; i++){
+        if(pda.evaluateString(document.getElementById('input_textPDA').value,pda.posiblePaths[i])){
+            break;
+        }
+    }
     
+
 };
 
 function validarPDA(pda) {
@@ -414,12 +462,12 @@ function validarPDA(pda) {
                 if (pda.transition_table.length == 1) {
                     alert("La máquina debe tener transiciones");
                 } else {
-                    if (pda.alphabet.length == 0 ) {
+                    if (pda.alphabet.length == 0) {
                         alert("La máquina debe tener un alfabeto. Las transiciones deben ser separadas por ';' y ser de la forma: input,pop->push");
                     } else {
-                        if(pda.alphabetStack.length ==0){
+                        if (pda.alphabetStack.length == 0) {
                             alert("La máquina debe tener un alfabeto de pila. Las transiciones deben ser separadas por ';' y ser de la forma: input,pop->push");
-                        }else{
+                        } else {
 
                             if (pda.initial_state == null) {
                                 alert("La máquina debe tener un estado inicial");
@@ -429,19 +477,19 @@ function validarPDA(pda) {
                                 if (pda.final_states.length == 0) {
                                     alert("La máquina debe tener al menos un estado final");
                                 } else {
-                                        var espda = true;
-                                       
-                                        if (espda) {
-                                            return true;
-                                        }
-                                    
+                                    var espda = true;
+
+                                    if (espda) {
+                                        return true;
+                                    }
+
                                 }
-                        }
+                            }
 
                         }
 
 
-                        
+
                     }
                 }
 
