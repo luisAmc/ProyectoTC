@@ -17,38 +17,42 @@
 </head>
 
 <body>
-    <nav class = "navbar navbar-default" role = "navigation">
-       
-       <div class = "navbar-header">
-          <a class = "navbar-brand" href = "#">Teoría de la Computación</a>
-       </div>       
-       <div>
-          <ul class = "nav navbar-nav">
-             <li><a href = "../dfa/dfa.html">DFA</a></li>
-             <li class = "active"><a href = "#">PDA</a></li>
-             <li><a href = "#">TM</a></li>               
-          </ul>
-       </div>       
+    <nav class="navbar navbar-default" role="navigation">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">Teoría de la Computación</a>
+        </div>
+        <div>
+            <ul class="nav navbar-nav">
+                <li><a href="../dfa/dfa.html">DFA</a></li>
+                <li class="active"><a href="#">PDA</a></li>
+                <li><a href="#">TM</a></li>
+            </ul>
+        </div>
     </nav>
     <div class="mainComponents">
-    <div class="row">
-        <div class="col-md-7 center">
-            
-        <div id="pda_canvas">
-            <canvas id="canvas" width="800" height="600">
-                <span class="error">Your browser does not support<br>the HTML5 &lt;canvas&gt; element</span>
-            </canvas>
-        </div>       
-    </div>        
-        <div class="col-md-5 center">        
-            <div id="pda_inputs">
-            <h2>Autómata de Pila</h2>
-            <input type="text" id="input_textPDA" name="input" class="form-control input_text" placeholder="Ingrese una cadena"><br>
-            <button type="button" id="disable_canvas_buttonPDA" class="btn btn-default" onclick="disableMouseOverPDACanvas()">Procesar Cadena</button>
-            <button type="button" name="" id="showPDABtn" class="btn btn-default" onclick="">Mostrar Definición</button>
+        <div class="row">
+            <div class="col-md-7 center">
+                <div id="pda_canvas">
+                    <canvas id="canvas" width="800" height="600">
+                        <span class="error">Your browser does not support<br>the HTML5 &lt;canvas&gt; element</span>
+                    </canvas>
+                </div>
+            </div>
+            <div class="col-md-5 center">
+                <div id="stack">
+                    <table >
+                        <tr id="stack-row"></tr>
+                    </table>
+                </div>
+                <div id="pda_inputs">
+                    <h2>Autómata de Pila</h2>
+                    <input type="text" id="input_textPDA" name="input" class="form-control input_text" placeholder="Ingrese una cadena">
+                    <br>
+                    <button type="button" id="disable_canvas_buttonPDA" class="btn btn-default" onclick="disableMouseOverPDACanvas()">Procesar Cadena</button>
+                    <button type="button" name="" id="showPDABtn" class="btn btn-default" onclick="">Mostrar Definición</button>
+                </div>
+            </div>
         </div>
-        </div>
-    </div>
     </div>
     <div id="pda-definition">
         <button type="button" id="hidePDABtn" class="btn btn-default" onclick="">Mostrar PDA</button>
@@ -56,7 +60,6 @@
             <div class="content-title">
                 <h1 style="color:white"><u>Definición Formal</u></h1></div>
             <div class="content-body">
-                
             </div>
         </div>
     </div>

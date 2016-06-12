@@ -7,7 +7,6 @@
 
 body {
     font: 14px helvetica neue, helvetica, arial, sans-serif;
-    
     height: 680px;
     overflow-y: hidden;
 }
@@ -31,11 +30,11 @@ div#dfa_inputs {
     padding: 20px;
     margin-top: 200px;
 }
+
 div#pda_inputs {
     padding: 20px;
     margin-top: 200px;
 }
-
 
 #disable_canvas_button {
     height: 30px;
@@ -56,7 +55,7 @@ div#pda_inputs {
 
 .input_text {
     height: 30px;
-    margin-right: 10px;    
+    margin-right: 10px;
     margin: auto;
     width: 70%;
 }
@@ -100,7 +99,6 @@ div#input_animation {
     text-align: -webkit-center;
     display: flex;
     margin-right: 570px;
-
 }
 
 .info {
@@ -113,8 +111,8 @@ div#input_animation {
 }
 
 table.transitions,
-th,
-td {
+.transitions th,
+.transitions td {
     border: 0.5px solid white;
     color: white;
     text-align: -webkit-center;
@@ -124,6 +122,7 @@ td {
     display: none;
     background: #333;
 }
+
 .pda-definition {
     display: none;
     background: #333;
@@ -140,10 +139,30 @@ td {
     text-align: -webkit-center;
 }
 
-.mainDiv{
+.mainDiv {
     display: inline-block;
 }
 
-.center{
+.center {
     text-align: center;
+}
+
+div#stack table,
+div#stack tr,
+div#stack td {
+    border: 1px solid black;
+}
+
+#stack td {
+    width: 40px;
+    height: 40px;
+}
+
+#stack {
+    position: relative;
+    left: 100px;
+}
+
+tr#stack-row {
+    height: 40px;
 }

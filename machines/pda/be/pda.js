@@ -17,6 +17,7 @@ function PDA(nodes, links) {
     this.alphabet = this.defineAlphabet();
     this.alphabetStack = this.definealphabetStack();
     this.posiblePaths = [];
+    this.waitTime = 0;
     this.stack = new Array();
     // this.print();
     //console.log(this.transitions);
@@ -57,18 +58,21 @@ PDA.prototype.buildPath = function(path, fromNode) {
         }
     }
     path.hasBranches = Object.keys(path.branches).length > 0;
-    if(!path.hasBranches){
+    if (!path.hasBranches && path.input === "") {
         this.posiblePaths.push(path.transitions);
     }
     return path;
 
 }
-PDA.prototype.evaluateString = function(input, pathTransitions) {
+PDA.prototype.evaluateString = function(input, pathTransitions, index) {
     var currentNode = this.initial_state;
     var nodePath = [];
     var transitionPath = [];
+    var stackActions = [];
+    var stackAlphabet = []
     var termina = false;
     var rechazo = false;
+    $("#stack-row").empty();
 
     for (var currentLetter = 0; currentLetter < input.length; currentLetter++) {
         var salirFor = false;
@@ -101,9 +105,15 @@ PDA.prototype.evaluateString = function(input, pathTransitions) {
 
                                     nodePath.push(currentNode);
                                     transitionPath.push(current_transition);
+                                    stackActions.push("pop");
                                     this.stack.pop();
-                                    if (currentDividedTransition[3] != 'E') {
-                                        this.stack.push(currentDividedTransition[3])
+
+                                    if (currentDividedTransition[3] !== 'E') {
+                                        this.stack.push(currentDividedTransition[3]);
+                                        stackAlphabet.push(currentDividedTransition[3]);
+                                        stackActions.push("push");
+                                    } else {
+                                        stackActions.push("nothing")
                                     }
                                     if (current_transition instanceof Link) { //si no es un self link
                                         currentNode = current_transition.nodeB;
@@ -121,11 +131,16 @@ PDA.prototype.evaluateString = function(input, pathTransitions) {
                                 }
                             } else { //no importa lo que este en la pila
                                 //console.log("cambia estado");
+                                stackActions.push("nothing");
                                 nodePath.push(currentNode);
                                 transitionPath.push(current_transition);
                                 if (currentDividedTransition[3] != 'E') {
                                     this.stack.push(currentDividedTransition[3]);
+                                    stackAlphabet.push(currentDividedTransition[3]);
+                                    stackActions.push("push");
                                     //console.log("pushea: "+currentDividedTransition[3]);
+                                } else {
+                                    stackActions.push("nothing");
                                 }
                                 if (current_transition instanceof Link) { //si no es un self link
                                     currentNode = current_transition.nodeB;
@@ -156,6 +171,7 @@ PDA.prototype.evaluateString = function(input, pathTransitions) {
             break;
     }
     if (!rechazo) {
+
         var hayTransicionE = true;
         console.log("Transiciones E");
         while (hayTransicionE) { //ciclo para evaluar si hay transiciones epsilon en el ultimo estado
@@ -190,9 +206,14 @@ PDA.prototype.evaluateString = function(input, pathTransitions) {
                                         nodePath.push(currentNode);
                                         transitionPath.push(current_transition);
                                         this.stack.pop();
+                                        stackActions.push("pop");
                                         if (currentDividedTransition[3] != 'E') {
                                             this.stack.push(currentDividedTransition[3]);
+                                            stackAlphabet.push(currentDividedTransition[3]);
+                                            stackActions.push("push");
                                             //console.log("pushea: "+currentDividedTransition[3]);
+                                        } else {
+                                            stackActions.push("nothing");
                                         }
                                         if (current_transition instanceof Link) { //si no es un self link
                                             currentNode = current_transition.nodeB;
@@ -203,11 +224,16 @@ PDA.prototype.evaluateString = function(input, pathTransitions) {
                                     }
                                 } else { //no importa lo que este en la pila
                                     //console.log("cambia estado");
+                                    stackActions.push("nothing");
                                     nodePath.push(currentNode);
                                     transitionPath.push(current_transition);
                                     if (currentDividedTransition[3] != 'E') {
                                         this.stack.push(currentDividedTransition[3]);
+                                        stackActions.push("push");
+                                        stackAlphabet.push(currentDividedTransition[3]);
                                         //console.log("pushea: "+currentDividedTransition[3]);
+                                    } else {
+                                        stackActions.push("nothing")
                                     }
                                     if (current_transition instanceof Link) { //si no es un self link
                                         currentNode = current_transition.nodeB;
@@ -231,18 +257,55 @@ PDA.prototype.evaluateString = function(input, pathTransitions) {
             }
         }
     }
+    var count = 0;
+    this.waitTime = this.waitTime + 410 * (stackActions.length + 1) * stackActions.length / 2;
+    var evaluate = function(input, path, time, index, that) {
+   
+        setTimeout(function() {
+            that.evaluateString(input, path, index);
+        }, time)
+    }
+    var addStackAction = function(action, i, isLast, that, index,isAccepted) {
+
+        setTimeout(function() {
+
+            if (action === "push") {
+                var stackElement = document.createElement("td");
+                stackElement.setAttribute("data-id", count);
+                if ($("td[data-id='" + count + "']").length === 0) {
+                    stackElement.textContent = stackAlphabet[count];
+                    count++;
+                    $("#stack-row").append(stackElement);
+                }
+
+            } else {
+                if (action === "pop") {
+                    $("#stack-row").children()[$("#stack-row").children().length - 1].remove();
+                }
+            }
+            if (isLast && !isAccepted) {
+                if (that.posiblePaths.length > index + 1)
+                    evaluate(input, that.posiblePaths[index + 1], 100, index + 1, that);
+            }
+        }, 410 * i);
+    }
+    var count = 0;
+
+    for (var i = 0; i < stackActions.length; i++) {
+        addStackAction(stackActions[i], i, i === stackActions.length - 1, this, index,currentNode.isAcceptState);
+    }
     nodePath.push(currentNode); //agregar el ultimo nodo en que se quedo
-    if (currentNode.isAcceptState){
+    if (currentNode.isAcceptState) {
 
         console.log("Acepta");
-        return true;
-    }
 
-    else{
+    } else {
 
         console.log("Rechaza");
-        return false;
+
     }
+
+
     console.log("Nodos");
     console.log(nodePath);
     console.log("Transiciones");
@@ -419,13 +482,17 @@ function disableMouseOverPDACanvas() {
         //pda.evaluateString(document.getElementById('input_text').value);
     }
     pda.posiblePaths = [];
+    var accepted = false;
     var allPaths = pda.buildPath({ input: document.getElementById('input_textPDA').value, branches: {}, transitions: [] }, pda.initial_state.text);
-    for(var i = 0 ; i < pda.posiblePaths.length; i++){
-        if(pda.evaluateString(document.getElementById('input_textPDA').value,pda.posiblePaths[i])){
-            break;
-        }
+    console.log(pda.posiblePaths)
+    if (pda.posiblePaths.length > 0) {
+        pda.evaluateString(document.getElementById('input_textPDA').value, pda.posiblePaths[0], 0);
+    }else{
+        alert("No hay caminos válidos para esa entrada");
     }
-    
+
+
+
 
 };
 
