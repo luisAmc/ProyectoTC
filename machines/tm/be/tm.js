@@ -4,18 +4,16 @@ function TM(nodes, links, user_input) {
 	this.user_input = user_input;
 	this.tape = "_" + this.user_input + "_";
 
+	this.transition_table = this.createTransitionTable();
+
 	this.input_alphabet = this.getInputAlphabet(false);
 	this.tape_alphabet = this.getInputAlphabet(true);
-
 
 	this.initial_state = this.getInitialState();
 	this.accept_state = this.getAcceptState();
 	this.reject_state = this.getRejectState();
 
-
-	this.transition_table = this.createTransitionTable();
-
-	this.evaluateString();
+	this.showOnHTML();
 }
 
 TM.prototype.evaluateString = function() {
@@ -31,7 +29,7 @@ TM.prototype.evaluateString = function() {
 
 			for (var transition_index = 0; transition_index < this.transition_table.length; transition_index++) {
 				current_transition = this.transition_table[transition_index];
-				console.log("Current State: " + current_state + " == Start State CT " + current_transition.start_state + ", input_symbol " + current_transition.input_symbol + " == charAt " + temp_tape.charAt(current_tape_index));
+				
 				if ((current_transition.start_state == current_state) && (current_transition.input_symbol == temp_tape.charAt(current_tape_index))) {
 					current_state = current_transition.final_state;
 					state_change = true;
@@ -50,17 +48,17 @@ TM.prototype.evaluateString = function() {
 	}
 
 	if (current_state === 'qa')
-		alert("Accepted");
+		alert("La cadena es aceptada");
 	else
-		alert("Rejected");
+		alert("La cadena es rechazada");
 };
 
 
 TM.prototype.getInputAlphabet = function(add_blank) {
 	var alphabet = new Set();
-	for (var index = 0; index < this.user_input.length; index++)
-		if (!alphabet.has(this.user_input.charAt(index)))
-			alphabet.add(this.user_input.charAt(index));
+	for (var index = 0; index < this.transition_table.length; index++)
+		if (!alphabet.has(this.transition_table[index].input_symbol))
+			alphabet.add(this.transition_table[index].input_symbol);
 
 	if (add_blank)
 		alphabet.add("_");
@@ -134,17 +132,169 @@ TM.prototype.getStartTransition = function() {
 	return null;
 };
 
+TM.prototype.validateTmStructure = function() {
+	var trans_text = nodes_text = accept_state = false;
+	var error_message = "VALIDACIONES DE ESTRUCTURA";
+	
+	if (accept_state = (this.accept_state == null)) 
+		error_message += "\n* La máquina requiere de un estado de aceptación\n";
+	
+
+	if (!(trans_text = this.validateTransitionsText())) 
+		error_message += "\n* Las transiciones tienen que tener la forma a->b,c\n" +
+			"\tDonde:\n" +
+			"\ta: es el símbolo de entrada,\n" +
+			"\tb: es el símbolo a poner en la cinta,\n" +
+			"\tc: es la dirección a la que mover la cinta {R, L}\n";
+	
+	if (!(nodes_text = this.validateNodesText())) 
+		error_message += "\n* Todos los estados tienen que tener nombre\n";
+
+	if (!trans_text || !nodes_text || accept_state) {
+		alert(error_message);
+		return false;	
+	}
+
+	return true;
+};
+
+TM.prototype.validateTransitionsText = function() {
+	var pattern = /^[a-zA-Z0-9_]->[a-zA-Z0-9_],(R|r|L|l)$/; 
+	for (var index = 0; index < this.transitions.length; index++) 
+		if (!pattern.test(this.transitions[index].text) && !(this.transitions[index] instanceof StartLink)) 
+			return false;
+	return true;
+};
+
+TM.prototype.validateNodesText = function() {
+	for (var index = 0; index < this.states.length; index++)
+		if (this.states[index].text == null || this.states[index].text == "")
+			return false;
+	return true;
+};
+
+TM.prototype.revertAllColoring = function() {
+    for (var i = 0; i < this.states.length; i++) {
+        this.states[i].animate("white", 30);
+    }
+};
+
+TM.prototype.showOnHTML = function() {
+	this.showAllStatesOnHTML();
+	this.showTransitionTableOnHTML();
+	this.showUniqueStatesOnHTML();
+	this.showAlphabetsOnHTML();
+};
+
+TM.prototype.showAllStatesOnHTML = function() {
+	var states_text = [];
+	for (var index = 0; index < this.states.length; index++)
+		states_text.push(this.states[index].text);
+	$(".state").text("{" + states_text.toString() + "}");
+};
+
+TM.prototype.showUniqueStatesOnHTML = function() {
+	$(".initial_state").text(this.initial_state.text);
+	$(".accept_state").text(this.accept_state.text);
+	$(".reject_state").text(this.reject_state.text);
+};
+
+TM.prototype.showTransitionTableOnHTML = function() {
+	var transition_table_text = "Transition table\n";
+	var table_header = ['Estado actual', "Símbolo de entrada", "Símbolo a colocar en la cinta", "Dirección de movimiento", "Siguiente estado"];
+	$(".transitions tbody").empty();
+	$(".transitions tbody").append(table_header);
+	
+	var table_row = null;
+	for (var row = 0; row < this.transition_table.length; row++) {
+		table_row = $('<tr/>');
+		table_row.append("<td>" + this.transition_table[row].start_state + "</td>");
+		table_row.append("<td>" + this.transition_table[row].input_symbol + "</td>");
+		table_row.append("<td>" + this.transition_table[row].set_in_tape + "</td>");
+		table_row.append("<td>" + this.transition_table[row].move_to + "</td>");
+		table_row.append("<td>" + this.transition_table[row].final_state + "</td>");
+		$(".transitions tbody").append(table_row);
+	}	
+};
+
+TM.prototype.showAlphabetsOnHTML = function() {
+	var input_alphabet_text = Array.from(this.input_alphabet);
+	$(".input_alphabet").text("{" + input_alphabet_text.toString() + "}");
+	$(".tape_alphabet").text("{" + input_alphabet_text.toString() + ",_}");
+};
+
+function showTMDefinition() {
+	if ($(".states").text() !== "") {
+		$(".mainComponents").slideUp();
+        $("body").css("overflow", "auto");
+        $("#tm-definition").show();
+	}
+}
+
+function hideTMDefinition() {
+    $(".mainComponents").slideDown();
+    $("body").css("overflow", "hidden");
+    $("#tm-definition").hide();
+}
+
+function genericValidations() {
+	var has_errors = false, error_message = "VALIDACIONES GENERICAS:";
+
+	if (nodes.length == 0) {
+		error_message += "\n* La máquina debe de tener estados\n";
+		has_errors = true;
+	}
+
+	if (!validateStartLink()) {
+		error_message += "\n* La máquina requiere de un estado inicial\n";
+		has_errors = true;
+	}
+	
+	if (links.length == 0) {
+		error_message += "\n* La máquina debe de tener transiciones\n";
+		has_errors = true;
+	} else if (!validateLinksHasGenericText()) {
+		error_message += "\n* Las transiciones (excepto la de inicio) necesitan tener texto\n";
+		has_errors = true;
+	}
+
+	return {
+		has_errors: has_errors,
+		error_message: error_message
+	};
+};
+
+function validateStartLink() {
+	for (var index = 0; index < links.length; index++)
+		if (links[index] instanceof StartLink)
+			return true;
+	return false;
+}
+
+function validateLinksHasGenericText() {
+	for (var index = 0; index < links.length; index++)
+		if ((links[index].text == null || links[index].text == "") && !(links[index] instanceof StartLink))
+			return false;
+	return true;
+}
+
 function disableMouseOverTMCanvas() {
-	var tm = new TM(nodes, links, document.getElementById('input_text').value);
-	// tm.revertAllColoring();
-	// if (validateTM(tm)) {
- //        canvas.onmousedown = function(e) {};
- //        canvas.ondblclick = function(e) {};
- //        canvas.onmousemove = function(e) {};
- //        canvas.onmouseup = function(e) {};
+	var generic_validations = genericValidations();
+	console.log(generic_validations);
+	if (!generic_validations.has_errors) {
+		var tm = new TM(nodes, links, document.getElementById('input_text').value);
+		tm.revertAllColoring();
+		if (tm.validateTmStructure()) {
+        canvas.onmousedown = function(e) {};
+        canvas.ondblclick = function(e) {};
+        canvas.onmousemove = function(e) {};
+        canvas.onmouseup = function(e) {};
 
  //        $("#input_animation .processed").text("");
  //        $("#input_animation .unprocessed").text(document.getElementById('input_text').value);
- //        tm.evaluateString(document.getElementById('input_text').value);
-	// }
+	       tm.evaluateString();
+		}
+	} else {
+		alert(generic_validations.error_message);
+	}
 };
