@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=utf-8 />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="../../css/mainComponents.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+    <script type="text/javascript" src="../../src/elements/Link.js"></script>
+    <script type="text/javascript" src="../../src/elements/Node.js"></script>
+    <script type="text/javascript" src="../../src/elements/SelfLink.js"></script>
+    <script type="text/javascript" src="../../src/elements/StartLink.js"></script>
+    <script type="text/javascript" src="../../src/elements/TemporaryLink.js"></script>
+    <script type="text/javascript" src="../../src/elements/Pointer.js"></script>
+    <script type="text/javascript" src="../../src/designer/fmsDesigner.js"></script>
+    <script type="text/javascript" src="be/tm.js"></script>
+</head>
+<body>
+    <nav class = "navbar navbar-default" role = "navigation">
+       <div class = "navbar-header">
+          <a class = "navbar-brand" href = "#">Teoría de la Computación</a>
+       </div>       
+       <div>
+          <ul class = "nav navbar-nav">
+             <li><a href = "../dfa/dfa.html">DFA</a></li>
+             <li><a href = "../pda/pda.html">PDA</a></li>
+             <li class = "active"><a href = "#">TM</a></li>               
+          </ul>
+       </div>       
+    </nav>
+
+    <div class="mainComponents">
+    <div class="row">
+        <div class="col-md-7 center">
+            
+        <div id="dfa_canvas">
+            <canvas id="canvas" width="800" height="600">
+                <span class="error">Your browser does not support<br>the HTML5 &lt;canvas&gt; element</span>
+            </canvas>
+        </div>
+        <div id="input_animation">
+            <div style='text-decoration:line-through;' class="processed"></div>
+            <div class="unprocessed"></div>
+        </div>        
+    </div>        
+        <div class="col-md-5 center">        
+            <div id="dfa_inputs">
+                <h2>Máquina de Turing</h2>
+                <input type="text" id="input_text" name="input" class="form-control" placeholder="Ingrese una cadena"><br>
+                <button type="button" id="disable_canvas_button" class="btn btn-default" onclick="disableMouseOverTMCanvas()">Procesar Cadena</button>
+                <button type="button" name="" id="showTMBtn" class="btn btn-default" onclick="showTMDefinition()">Mostrar Definición</button>
+            </div>
+        </div>
+    </div>
+    </div>
+    <div id="tm-definition">
+        <button type="button" id="hideTMBtn" class="btn btn-default" onclick="hideTMDefinition()">Mostrar TM</button>
+        <div class="content">
+            <div class="content-title">
+                <h1 style="color:white"><u>Definición Formal</u></h1></div>
+            <div class="content-body">
+                <h2 style="color:white">M = (Q,&nbsp;&Sigma;,&nbsp&delta;,&nbsp;q<sub>0</sub>,&nbsp;F)</h2>
+                <br>
+                <h3 class="title-info">Q = {&nbsp;<p class="states info"></p>&nbsp;}</h3>
+                <br>
+                <h3 class="title-info">&Sigma; = {&nbsp;<p class="alphabet info"></p>&nbsp;}</h3>
+                <br>
+                <h3 class="title-info">&delta;</h3>
+                <br>
+                <table class="transitions table table-condensed">
+                    <tr>
+                        <th>Estado Actual</th>
+                        <th>Símbolo</th>
+                        <th>Siguiente Estado</th>
+                    </tr>
+                </table>
+                <br>
+                <h3 class="title-info">q<sub>0</sub>&nbsp;=&nbsp;<p class="initial_state info"></p></h3>
+                <br>
+                <h3 class="title-info">F = {&nbsp; <p class="final_states info"></p>&nbsp;}</h3>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
