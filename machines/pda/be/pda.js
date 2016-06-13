@@ -25,13 +25,15 @@ function PDA(nodes, links) {
 PDA.prototype.buildPath = function(path, fromNode) {
 
     for (var j = 0; j < this.transitions.length; j++) {
-        var transitionFrom, transitionTo;
+        var transitionFrom, transitionTo, isAcceptState;
         if (this.transitions[j] instanceof SelfLink || this.transitions[j] instanceof StartLink) {
             transitionFrom = this.transitions[j].node.text;
             transitionTo = this.transitions[j].node.text;
+            isAcceptState = this.transitions[j].node.isAcceptState;
         } else {
             transitionFrom = this.transitions[j].nodeA.text;
             transitionTo = this.transitions[j].nodeB.text;
+            isAcceptState = this.transitions[j].nodeA.isAcceptState;
         }
         if (transitionFrom === fromNode) {
             var simbols = this.transitions[j].text.split(";");
@@ -58,6 +60,7 @@ PDA.prototype.buildPath = function(path, fromNode) {
         }
     }
     path.hasBranches = Object.keys(path.branches).length > 0;
+    console.log(path.isAcceptState)
     if (!path.hasBranches && path.input === "") {
         this.posiblePaths.push(path.transitions);
     }
@@ -259,13 +262,29 @@ PDA.prototype.evaluateString = function(input, pathTransitions, index) {
     }
     var count = 0;
     this.waitTime = this.waitTime + 410 * (stackActions.length + 1) * stackActions.length / 2;
+    var nodeAmount = 0;
+    var timeAmount = 0;
+    var addAnimation = function(node, time, color, radiusSize) {
+
+        setTimeout(function() {
+
+            node.animate(color, radiusSize);
+        }, 300 * time);
+    };
+    var addTextAnimation = function(index, time) {
+        setTimeout(function() {
+            $("#input_animation .processed").text(input.substr(0, index + 1));
+            $("#input_animation .unprocessed").text(input.substr(index + 1, input.length))
+        }, 310 * time);
+    };
     var evaluate = function(input, path, time, index, that) {
-   
+
         setTimeout(function() {
             that.evaluateString(input, path, index);
         }, time)
     }
-    var addStackAction = function(action, i, isLast, that, index,isAccepted) {
+    console.log(stackActions)
+    var addStackAction = function(action, i, isLast, that, index, isAccepted, time) {
 
         setTimeout(function() {
 
@@ -287,21 +306,33 @@ PDA.prototype.evaluateString = function(input, pathTransitions, index) {
                 if (that.posiblePaths.length > index + 1)
                     evaluate(input, that.posiblePaths[index + 1], 100, index + 1, that);
             }
-        }, 410 * i);
+        }, 310 * time);
     }
     var count = 0;
+    var stackActionsCount = 0;
+    while (nodeAmount < nodePath.length) {
+        addAnimation(nodePath[nodeAmount], timeAmount + 1, "yellow", 31);
+        addAnimation(nodePath[nodeAmount], timeAmount + 3, "white", 30);
+        addAnimation(transitionPath[nodeAmount], timeAmount + 5, "yellow");
+        // addTextAnimation(nodeAmount, timeAmount + 1);
+        //addAnimation(nodePath[nodeAmount], timeAmount + 5, "yellow", 31);
+        addAnimation(transitionPath[nodeAmount], timeAmount + 7, "white");
+        addStackAction(stackActions[stackActionsCount], stackActionsCount, stackActionsCount === stackActions.length - 1, this, index, currentNode.isAcceptState, timeAmount + 5);
+        addStackAction(stackActions[stackActionsCount + 1], stackActionsCount + 1, stackActionsCount + 1 === stackActions.length - 1, this, index, currentNode.isAcceptState, timeAmount + 7);
+        stackActionsCount += 2;
+        nodeAmount++;
+        timeAmount += 9;
 
-    for (var i = 0; i < stackActions.length; i++) {
-        addStackAction(stackActions[i], i, i === stackActions.length - 1, this, index,currentNode.isAcceptState);
     }
+
     nodePath.push(currentNode); //agregar el ultimo nodo en que se quedo
     if (currentNode.isAcceptState) {
-
         console.log("Acepta");
+        addAnimation(currentNode, timeAmount, "blue", 31);
 
     } else {
-
         console.log("Rechaza");
+        addAnimation(currentNode, timeAmount, "red", 31);
 
     }
 
@@ -487,7 +518,7 @@ function disableMouseOverPDACanvas() {
     console.log(pda.posiblePaths)
     if (pda.posiblePaths.length > 0) {
         pda.evaluateString(document.getElementById('input_textPDA').value, pda.posiblePaths[0], 0);
-    }else{
+    } else {
         alert("No hay caminos válidos para esa entrada");
     }
 
