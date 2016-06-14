@@ -12,8 +12,6 @@ function TM(nodes, links, user_input) {
 	this.initial_state = this.getInitialState();
 	this.accept_state = this.getAcceptState();
 	this.reject_state = this.getRejectState();
-
-	this.showOnHTML();
 }
 
 TM.prototype.evaluateString = function() {
@@ -98,7 +96,6 @@ TM.prototype.createTransitionTable = function() {
 };
 
 TM.prototype.getTransitionData = function(current_transition) {
-	console.log(current_transition);
 	var input_and_tape_data = current_transition.text.split("->");
 	var tape_symbol_and_movement_data = input_and_tape_data[1].split(",");
 	return [input_and_tape_data[0], tape_symbol_and_movement_data[0], tape_symbol_and_movement_data[1]];
@@ -190,7 +187,7 @@ TM.prototype.showAllStatesOnHTML = function() {
 	var states_text = [];
 	for (var index = 0; index < this.states.length; index++)
 		states_text.push(this.states[index].text);
-	$(".state").text("{" + states_text.toString() + "}");
+	$(".states").text("{" + states_text.toString() + "}");
 };
 
 TM.prototype.showUniqueStatesOnHTML = function() {
@@ -201,20 +198,48 @@ TM.prototype.showUniqueStatesOnHTML = function() {
 
 TM.prototype.showTransitionTableOnHTML = function() {
 	var transition_table_text = "Transition table\n";
-	var table_header = ['Estado actual', "Símbolo de entrada", "Símbolo a colocar en la cinta", "Dirección de movimiento", "Siguiente estado"];
-	$(".transitions tbody").empty();
-	$(".transitions tbody").append(table_header);
-	
-	var table_row = null;
-	for (var row = 0; row < this.transition_table.length; row++) {
-		table_row = $('<tr/>');
-		table_row.append("<td>" + this.transition_table[row].start_state + "</td>");
-		table_row.append("<td>" + this.transition_table[row].input_symbol + "</td>");
-		table_row.append("<td>" + this.transition_table[row].set_in_tape + "</td>");
-		table_row.append("<td>" + this.transition_table[row].move_to + "</td>");
-		table_row.append("<td>" + this.transition_table[row].final_state + "</td>");
-		$(".transitions tbody").append(table_row);
-	}	
+    var start_state_column, input_symbol_column, set_in_tape_column, move_to_column, final_state_column;
+    $(".transitions thead").empty();
+    $(".transitions tbody").empty();
+    $(".transitions thead").append(
+    	'<tr><th>Estado Actual</th>' + 
+    	'<th>Símbolo de entrada</th>' + 
+    	'<th>Símbolo a colocar en la cinta</th>' + 
+    	'<th>Dirección de movimiento</th>' +
+    	'<th>Siguiente estado</th></tr>');
+    for (var index = 0; index < this.transition_table.length; index++) {
+        var new_row = document.createElement("tr");
+        console.log(this.transition_table[index]);
+        transition_table_text += "[";
+        start_state_column = document.createElement("td");
+        start_state_column.textContent = this.transition_table[index].start_state;
+        new_row.appendChild(start_state_column);
+        transition_table_text += "\t";
+
+        input_symbol_column = document.createElement("td");
+        input_symbol_column.textContent = this.transition_table[index].input_symbol;
+        new_row.appendChild(input_symbol_column);
+        transition_table_text += "\t";
+
+        set_in_tape_column = document.createElement("td");
+        set_in_tape_column.textContent = this.transition_table[index].set_in_tape;
+        new_row.appendChild(set_in_tape_column);
+        transition_table_text += "\t";
+
+        move_to_column = document.createElement("td");
+        move_to_column.textContent = this.transition_table[index].move_to;
+        new_row.appendChild(move_to_column);
+        transition_table_text += "\t";
+        
+        final_state_column = document.createElement("td");
+        final_state_column.textContent = this.transition_table[index].final_state;
+        new_row.appendChild(final_state_column);
+   
+       
+        $(".transitions tbody").append(new_row);
+     
+        transition_table_text += "]\n";
+    }
 };
 
 TM.prototype.showAlphabetsOnHTML = function() {
@@ -224,11 +249,11 @@ TM.prototype.showAlphabetsOnHTML = function() {
 };
 
 function showTMDefinition() {
-	if ($(".states").text() !== "") {
+	// if ($(".states").text() !== "") {
 		$(".mainComponents").slideUp();
         $("body").css("overflow", "auto");
         $("#tm-definition").show();
-	}
+	// }
 }
 
 function hideTMDefinition() {
@@ -280,18 +305,18 @@ function validateLinksHasGenericText() {
 
 function disableMouseOverTMCanvas() {
 	var generic_validations = genericValidations();
-	console.log(generic_validations);
 	if (!generic_validations.has_errors) {
 		var tm = new TM(nodes, links, document.getElementById('input_text').value);
 		tm.revertAllColoring();
 		if (tm.validateTmStructure()) {
-        canvas.onmousedown = function(e) {};
-        canvas.ondblclick = function(e) {};
-        canvas.onmousemove = function(e) {};
-        canvas.onmouseup = function(e) {};
+	        canvas.onmousedown = function(e) {};
+	        canvas.ondblclick = function(e) {};
+	        canvas.onmousemove = function(e) {};
+	        canvas.onmouseup = function(e) {};
 
  //        $("#input_animation .processed").text("");
  //        $("#input_animation .unprocessed").text(document.getElementById('input_text').value);
+	       tm.showOnHTML();
 	       tm.evaluateString();
 		}
 	} else {
