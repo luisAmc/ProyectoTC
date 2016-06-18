@@ -82,9 +82,6 @@ DFA.prototype.evaluateString = function(input) {
         nodeAmount++;
         timeAmount += 7;
 
-
-
-
     }
 
     if (currentNode.isAcceptState) {
@@ -182,7 +179,9 @@ DFA.prototype.print = function() {
     }
     $(".states").text(stateTexts.toString());
     $(".alphabet").text(this.alphabet.toString());
-    $(".initial_state").text(this.initial_state.text);
+    try{
+        $(".initial_state").text(this.initial_state.text);
+    }catch(err){};
     $(".final_states").text(finalStatesTexts.toString());
     this.printTransitionTable();
 };
