@@ -350,3 +350,12 @@ function enableMouseOverDFACanvas() {
     enablecanvas();
 
 }
+
+
+function restoreBackup1(){
+    restoreBackup('{"nodes":[{"x":177,"y":211,"text":"a","isAcceptState":true},{"x":402,"y":207,"text":"b","isAcceptState":false}],"links":[{"type":"StartLink","node":0,"text":"","deltaX":-98,"deltaY":0},{"type":"Link","nodeA":0,"nodeB":1,"text":"1","lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},{"type":"Link","nodeA":1,"nodeB":0,"text":"1","lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},{"type":"SelfLink","node":0,"text":"0","anchorAngle":1.7681918866447774},{"type":"SelfLink","node":1,"text":"0","anchorAngle":-0.4636476090008061}]}');
+}
+
+function restoreBackup2(){
+    restoreBackup('{"nodes":[{"x":362,"y":159,"text":"a","isAcceptState":true},{"x":493,"y":274,"text":"b","isAcceptState":false},{"x":423,"y":435,"text":"c","isAcceptState":false},{"x":250,"y":435,"text":"d","isAcceptState":false},{"x":191,"y":280,"text":"e","isAcceptState":false}],"links":[{"type":"StartLink","node":0,"text":"","deltaX":-91,"deltaY":0},{"type":"SelfLink","node":0,"text":"0","anchorAngle":-1.4056476493802699},{"type":"Link","nodeA":0,"nodeB":1,"text":"1","lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},{"type":"Link","nodeA":1,"nodeB":2,"text":"0","lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},{"type":"Link","nodeA":1,"nodeB":3,"text":"1","lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},{"type":"Link","nodeA":2,"nodeB":0,"text":"1","lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},{"type":"Link","nodeA":2,"nodeB":4,"text":"0","lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},{"type":"Link","nodeA":3,"nodeB":2,"text":"1","lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},{"type":"Link","nodeA":3,"nodeB":1,"text":"0","lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},{"type":"SelfLink","node":4,"text":"1","anchorAngle":-2.743070207923373},{"type":"Link","nodeA":4,"nodeB":3,"text":"0","lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0}]}');
+}
