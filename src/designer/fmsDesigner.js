@@ -370,7 +370,6 @@ function restoreBackup(data) {
   //}
   try {
     var backup = JSON.parse(data);
-    //console.log(backup);
     for(var i = 0; i < backup.nodes.length; i++) {
       var backupNode = backup.nodes[i];
       var node = new Node(backupNode.x, backupNode.y);
@@ -402,7 +401,6 @@ function restoreBackup(data) {
       }
     }
   } catch(e) {
-    //console.log("catch");
     //localStorage['fsm'] = '';
   }
   draw();
@@ -460,7 +458,6 @@ function saveBackup() {
       backup.links.push(backupLink);
     }
   }
-  //console.log(JSON.stringify(backup));
   localStorage['fsm'] = JSON.stringify(backup);
 }
 

@@ -54,6 +54,10 @@
                     <br>
                     <button type="button" id="disable_canvas_buttonPDA" class="btn btn-default" onclick="disableMouseOverPDACanvas()">Procesar Cadena</button>
                     <button type="button" name="" id="showPDABtn" class="btn btn-default" onclick="showPDADefinition()">Mostrar Definición</button>
+                    <br>
+                    <br>
+                    <button type="button" name="" id="createBackup" class="btn btn-default" onclick="restoreBackup1()">Ejemplo 1</button>
+                    <button type="button" name="" id="restoreBackup" class="btn btn-default" onclick="restoreBackup2()">Ejemplo 2</button>
                 </div>
             </div>
         </div>
@@ -70,12 +74,16 @@
                 <br>
                 <h3 class="title-info">&Sigma; = {&nbsp;<p class="alphabet info"></p>&nbsp;}</h3>
                 <br>
+                <h3 class="title-info">&Gamma; = {&nbsp;<p class="stack info"></p>&nbsp;}</h3>
+                <br>
                 <h3 class="title-info">&delta;</h3>
                 <br>
                 <table class="transitions table table-condensed">
                     <tr>
                         <th>Estado Actual</th>
-                        <th>Símbolo</th>
+                        <th>Símbolo Cadena</th>
+                        <th>Pop</th>
+                        <th>Push</th>
                         <th>Siguiente Estado</th>
                     </tr>
                 </table>
