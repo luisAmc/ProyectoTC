@@ -60,7 +60,7 @@ PDA.prototype.buildPath = function(path, fromNode) {
         }
     }
     path.hasBranches = Object.keys(path.branches).length > 0;
-    console.log(path.isAcceptState)
+
     if (!path.hasBranches && path.input === "") {
         this.posiblePaths.push(path.transitions);
     }
@@ -76,7 +76,8 @@ PDA.prototype.evaluateString = function(input, pathTransitions, index) {
     var termina = false;
     var rechazo = false;
     $("#stack-row").empty();
-
+    $("#input_animation .processed").text("");
+    $("#input_animation .unprocessed").text(document.getElementById('input_textPDA').value);
     for (var currentLetter = 0; currentLetter < input.length; currentLetter++) {
         var salirFor = false;
         var recorridoTransiciones = 0;
@@ -310,11 +311,15 @@ PDA.prototype.evaluateString = function(input, pathTransitions, index) {
     }
     var count = 0;
     var stackActionsCount = 0;
+    var validAmount = 0;
     while (nodeAmount < nodePath.length) {
         addAnimation(nodePath[nodeAmount], timeAmount + 1, "yellow", 31);
         addAnimation(nodePath[nodeAmount], timeAmount + 3, "white", 30);
         addAnimation(transitionPath[nodeAmount], timeAmount + 5, "yellow");
-        // addTextAnimation(nodeAmount, timeAmount + 1);
+        if (transitionPath[nodeAmount].text[0] !== "E") {
+            addTextAnimation(validAmount, timeAmount + 6);
+            validAmount++;
+        }
         //addAnimation(nodePath[nodeAmount], timeAmount + 5, "yellow", 31);
         addAnimation(transitionPath[nodeAmount], timeAmount + 7, "white");
         addStackAction(stackActions[stackActionsCount], stackActionsCount, stackActionsCount === stackActions.length - 1, this, index, currentNode.isAcceptState, timeAmount + 5);
@@ -515,7 +520,7 @@ function disableMouseOverPDACanvas() {
     pda.posiblePaths = [];
     var accepted = false;
     var allPaths = pda.buildPath({ input: document.getElementById('input_textPDA').value, branches: {}, transitions: [] }, pda.initial_state.text);
-    console.log(pda.posiblePaths)
+
     if (pda.posiblePaths.length > 0) {
         pda.evaluateString(document.getElementById('input_textPDA').value, pda.posiblePaths[0], 0);
     } else {
@@ -526,6 +531,24 @@ function disableMouseOverPDACanvas() {
 
 
 };
+
+function showPDADefinition() {
+
+    if ($(".states").text() !== "") {
+        $(".mainComponents").slideUp();
+        $("body").css("overflow", "auto");
+        $("#pda-definition").show();
+    }
+
+};
+
+function hidePDADefinition() {
+    $(".mainComponents").slideDown();
+    $("body").css("overflow", "hidden");
+    $("#pda-definition").hide();
+
+
+}
 
 function validarPDA(pda) {
 

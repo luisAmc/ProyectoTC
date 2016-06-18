@@ -82,9 +82,6 @@ DFA.prototype.evaluateString = function(input) {
         nodeAmount++;
         timeAmount += 7;
 
-
-
-
     }
 
     if (currentNode.isAcceptState) {
