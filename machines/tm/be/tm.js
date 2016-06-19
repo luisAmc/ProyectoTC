@@ -12,6 +12,11 @@ function TM(nodes, links, user_input) {
 	this.initial_state = this.getInitialState();
 	this.accept_state = this.getAcceptState();
 	this.reject_state = this.getRejectState();
+	if (this.reject_state == null) {
+		this.reject_state = new Node(0, 0);
+		this.reject_state.isRejectState = true;
+		this.reject_state.text = "qr";
+	}
 
 	this.configurations = [];
 	this.states_path_text = [];
@@ -23,18 +28,11 @@ function TM(nodes, links, user_input) {
 TM.prototype.evaluateString = function() {
 	var current_tape_index = 1;
 	var current_state = this.initial_state.text, current_transition = null, temp_tape = this.tape, state_change = false;;
-	while (current_state != "qa" && current_state != "qr") {
+	while (current_state != this.accept_state.text && current_state != this.reject_state.text) {
 		
 		for (var current_input_symbol = 1; current_input_symbol < temp_tape.length - 1; current_input_symbol++) {
 			state_change = false;
 			
-			console.log(temp_tape);
-			console.log(temp_tape.substr(0, current_tape_index) + "<" + current_state + ">" + temp_tape.substr(current_tape_index ));
-			this.configurations.push(temp_tape.substr(0, current_tape_index) + "<" + current_state + ">" + temp_tape.substr(current_tape_index));
-			
-			if (current_state === "qa" || current_state === "qr") 
-				break;
-
 			for (var transition_index = 0; transition_index < this.transition_table.length; transition_index++) {
 				current_transition = this.transition_table[transition_index];
 				
@@ -46,6 +44,9 @@ TM.prototype.evaluateString = function() {
 					state_change = true;
 					temp_tape = temp_tape.substr(0, current_tape_index) + current_transition.set_in_tape + temp_tape.substr(current_tape_index + 1);
 					
+					console.log(temp_tape.substr(0, current_tape_index) + "<" + current_state + ">" + temp_tape.substr(current_tape_index ));
+					this.configurations.push(temp_tape.substr(0, current_tape_index) + "<" + current_state + ">" + temp_tape.substr(current_tape_index));
+					
 					if (current_transition.move_to === "R" || current_transition.move_to === "r")
 						current_tape_index++;
 					else if (current_transition.move_to === "L" || current_transition.move_to === "l")
@@ -56,16 +57,16 @@ TM.prototype.evaluateString = function() {
 
 			}
 
-			if (current_state === "qa")
-				break;
 		}
 
+		if (current_state == this.accept_state.text || current_state === this.reject_state.text) 
+			state_change = true;
+
 		if (!state_change)
-			current_state = "qr";	
+			current_state = this.reject_state.text;	
 	}
 
-	console.log(current_state);
-	if (current_state === "qa"){
+	if (current_state == this.accept_state.text){
 		console.log("si");
 		alert("La cadena es aceptada");
 	}
@@ -91,10 +92,9 @@ TM.prototype.animateMachine = function() {
 	var add_text_animation = function(tape, time) {
 		setTimeout(function() {
 			$("#input_animation").text(tape);
-		}, 310 * time);
+		}, 300 * time);
 	}
 
-	console.log("c: " + this.configurations.length + ", s: " + this.states_path.length);
 
 	while (node_amount < this.configurations.length) {
 		add_animation(this.transitions_path[node_amount], time_amount + 1, "yellow");
@@ -110,7 +110,7 @@ TM.prototype.animateMachine = function() {
 	}
 
 	var diff_amount = this.configurations.length - this.states_path.length + 1;
-	if (this.states_path[node_amount - diff_amount].text == "qa")
+	if (this.states_path[node_amount - diff_amount].text == this.accept_state.text)
 		add_animation(this.states_path[node_amount - diff_amount], time_amount, "blue", 31);
 	else
 		add_animation(this.states_path[node_amount - diff_amount], time_amount, "red", 31);
@@ -171,7 +171,7 @@ TM.prototype.getTransitionData = function(current_transition) {
 
 TM.prototype.getRejectState = function() {
 	for (var index = 0; index < this.states.length; index++)
-		if (this.states[index].text === 'qr')
+		if (this.states[index].isRejectState)
 			return this.states[index];
 
 	return null;
@@ -179,7 +179,7 @@ TM.prototype.getRejectState = function() {
 
 TM.prototype.getAcceptState = function() {
 	for (var index = 0; index < this.states.length; index++)
-		if (this.states[index].text === 'qa')
+		if (this.states[index].isAcceptState)
 			return this.states[index];
 
 	return null;
@@ -207,10 +207,11 @@ TM.prototype.validateTmStructure = function() {
 
 	if (!(trans_text = this.validateTransitionsText())) 
 		error_message += "\n* Las transiciones tienen que tener la forma a->b,c\n" +
-			"\tDonde:\n" +
-			"\ta: es el símbolo de entrada,\n" +
-			"\tb: es el símbolo a poner en la cinta,\n" +
-			"\tc: es la dirección a la que mover la cinta {R, L}\n";
+			"    Donde:\n" +
+			"    - a: es el símbolo de entrada,\n" +
+			"    - b: es el símbolo a poner en la cinta,\n" +
+			"    - c: es la dirección a la que mover la cinta {R, L}\n" + 
+			"    Dado el siguiente patron: [a-zA-Z0-9_#]->[a-zA-Z0-9_#],(R|r|L|l)\n";
 	
 	if (!(nodes_text = this.validateNodesText())) 
 		error_message += "\n* Todos los estados tienen que tener nombre\n";
@@ -224,10 +225,11 @@ TM.prototype.validateTmStructure = function() {
 };
 
 TM.prototype.validateTransitionsText = function() {
-	var pattern = /^[a-zA-Z0-9_]->[a-zA-Z0-9_],(R|r|L|l)$/; 
-	for (var index = 0; index < this.transitions.length; index++) 
+	var pattern = /^[a-zA-Z0-9_#]->[a-zA-Z0-9_#],(R|r|L|l)$/; 
+	for (var index = 0; index < this.transitions.length; index++) { 
 		if (!pattern.test(this.transitions[index].text) && !(this.transitions[index] instanceof StartLink)) 
 			return false;
+	}
 	return true;
 };
 
@@ -329,7 +331,6 @@ TM.prototype.getStatesFromText = function() {
 
 TM.prototype.getTransitionsFromText = function() {
 	var ret_val = [], current_transition = null, current_text_trans = null, transition_input_and_movement = null;
-	console.log("+++++++++++++++++++++++++++++++++++++++++++++++++");
 	for (var text_index = 0; text_index < this.transitions_path_text.length; text_index++)
 		for (var trans_index = 0; trans_index < this.transitions.length; trans_index++) {
 			current_transition = this.transitions[trans_index];
@@ -361,7 +362,6 @@ TM.prototype.getTransitionsFromText = function() {
 				}
 			}
 		}
-	console.log("+++++++++++++++++++++++++++++++++++++++++++++++++");
 
 	return ret_val;
 };
@@ -437,9 +437,6 @@ function disableMouseOverTMCanvas() {
 	       tm.showOnHTML();
 	       tm.evaluateString();
 	       tm.animateMachine();
-	       console.log(tm.transitions_path_text);
-	       console.log("reales:\n");
-	       console.log(tm.transitions_path);
 		}
 	} else {
 		alert(generic_validations.error_message);
