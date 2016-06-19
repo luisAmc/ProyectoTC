@@ -364,14 +364,12 @@ function fixed(number, digits) {
   return number.toFixed(digits).replace(/0+$/, '').replace(/\.$/, '');
 }
 
-function restoreBackup() {
-  if(!localStorage || !JSON) {
-    return;
-  }
-
+function restoreBackup(data) {
+  //if(!localStorage || !JSON) {
+    //return;
+  //}
   try {
-    var backup = JSON.parse(localStorage['fsm']);
-
+    var backup = JSON.parse(data);
     for(var i = 0; i < backup.nodes.length; i++) {
       var backupNode = backup.nodes[i];
       var node = new Node(backupNode.x, backupNode.y);
@@ -403,8 +401,9 @@ function restoreBackup() {
       }
     }
   } catch(e) {
-    localStorage['fsm'] = '';
+    //localStorage['fsm'] = '';
   }
+  draw();
 }
 
 function saveBackup() {
@@ -459,7 +458,6 @@ function saveBackup() {
       backup.links.push(backupLink);
     }
   }
-
   localStorage['fsm'] = JSON.stringify(backup);
 }
 
