@@ -26,7 +26,7 @@ body {
     background: #333;
 }
 
-div#dfa_inputs {
+div#dfa_inputs, div#tm_inputs {
     padding: 20px;
     margin-top: 200px;
 }
@@ -86,7 +86,7 @@ div#pda_inputs {
     height: 487px;
 }
 
-#showDFABtn {
+#showDFABtn, #showTMBtn {
     height: 30px;
 }
 
@@ -118,7 +118,7 @@ table.transitions,
     text-align: -webkit-center;
 }
 
-#dfa-definition {
+#dfa-definition, #tm-definition {
     display: none;
     background: #333;
 }
