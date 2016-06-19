@@ -19,7 +19,7 @@ function PDA(nodes, links) {
     this.posiblePaths = [];
     this.waitTime = 0;
     this.stack = new Array();
-    // this.print();
+    this.print();
     //console.log(this.transitions);
 }
 PDA.prototype.buildPath = function(path, fromNode) {
@@ -60,7 +60,7 @@ PDA.prototype.buildPath = function(path, fromNode) {
         }
     }
     path.hasBranches = Object.keys(path.branches).length > 0;
-    console.log(path.isAcceptState)
+
     if (!path.hasBranches && path.input === "") {
         this.posiblePaths.push(path.transitions);
     }
@@ -76,7 +76,8 @@ PDA.prototype.evaluateString = function(input, pathTransitions, index) {
     var termina = false;
     var rechazo = false;
     $("#stack-row").empty();
-
+    $("#input_animation .processed").text("");
+    $("#input_animation .unprocessed").text(document.getElementById('input_textPDA').value);
     for (var currentLetter = 0; currentLetter < input.length; currentLetter++) {
         var salirFor = false;
         var recorridoTransiciones = 0;
@@ -310,11 +311,15 @@ PDA.prototype.evaluateString = function(input, pathTransitions, index) {
     }
     var count = 0;
     var stackActionsCount = 0;
+    var validAmount = 0;
     while (nodeAmount < nodePath.length) {
         addAnimation(nodePath[nodeAmount], timeAmount + 1, "yellow", 31);
         addAnimation(nodePath[nodeAmount], timeAmount + 3, "white", 30);
         addAnimation(transitionPath[nodeAmount], timeAmount + 5, "yellow");
-        // addTextAnimation(nodeAmount, timeAmount + 1);
+        if (transitionPath[nodeAmount].text[0] !== "E") {
+            addTextAnimation(validAmount, timeAmount + 6);
+            validAmount++;
+        }
         //addAnimation(nodePath[nodeAmount], timeAmount + 5, "yellow", 31);
         addAnimation(transitionPath[nodeAmount], timeAmount + 7, "white");
         addStackAction(stackActions[stackActionsCount], stackActionsCount, stackActionsCount === stackActions.length - 1, this, index, currentNode.isAcceptState, timeAmount + 5);
@@ -515,7 +520,7 @@ function disableMouseOverPDACanvas() {
     pda.posiblePaths = [];
     var accepted = false;
     var allPaths = pda.buildPath({ input: document.getElementById('input_textPDA').value, branches: {}, transitions: [] }, pda.initial_state.text);
-    console.log(pda.posiblePaths)
+
     if (pda.posiblePaths.length > 0) {
         pda.evaluateString(document.getElementById('input_textPDA').value, pda.posiblePaths[0], 0);
     } else {
@@ -526,6 +531,24 @@ function disableMouseOverPDACanvas() {
 
 
 };
+
+function showPDADefinition() {
+    var pda = new PDA(nodes, links);
+    if ($(".states").text() !== "") {
+        $(".mainComponents").slideUp();
+        $("body").css("overflow", "auto");
+        $("#pda-definition").show();
+    }
+
+};
+
+function hidePDADefinition() {
+    $(".mainComponents").slideDown();
+    $("body").css("overflow", "hidden");
+    $("#pda-definition").hide();
+
+
+}
 
 function validarPDA(pda) {
 
@@ -598,4 +621,85 @@ function validarPDA(pda) {
     }
 
 
+}
+
+PDA.prototype.print = function() {
+
+    var stateTexts = [];
+    var finalStatesTexts = [];
+    for (var i = 0; i < this.states.length; i++) {
+        stateTexts.push(this.states[i].text);
+    }
+    for (var i = 0; i < this.final_states.length; i++) {
+        finalStatesTexts.push(this.final_states[i].text);
+    }
+    this.alphabet.splice(this.alphabet.indexOf("E"),1);
+    $(".states").text(stateTexts.toString());
+    $(".alphabet").text(this.alphabet.toString());
+    $(".stack").text(this.alphabetStack.toString());
+    try{
+        $(".initial_state").text(this.initial_state.text);
+    }catch(err){};
+    $(".final_states").text(finalStatesTexts.toString());
+    this.printTransitionTable();
+};
+
+PDA.prototype.printTransitionTable = function() {
+    var transition_table_text = "Transition table\n";
+    var newRow, newColumn;
+    $(".transitions tbody").empty();
+    $(".transitions tbody").append('<tr><th>Estado Actual</th><th>Símbolo</th><th>Pop</th><th>Push</th><th>Siguiente Estado</th></tr>');
+    for (var index = 0; index < this.transition_table.length; index++) {
+        for (var row = 0; row < this.transition_table[index].length; row++) {
+            if (index !== 0)
+                newRow = document.createElement("tr");
+
+            transition_table_text += "[";
+            for (var column = 0; column < this.transition_table[index][row].length; column++) {
+
+                transition_table_text += "" + this.transition_table[index][row][column];
+                if (index !== 0) {
+                    newColumn = document.createElement("td");
+
+                    newColumn.textContent = this.transition_table[index][row][column];
+                    newRow.appendChild(newColumn);
+                }
+                if (column != this.transition_table[index][row].length - 1)
+                    transition_table_text += "\t";
+            }
+            if (newRow) {
+                $(".transitions tbody").append(newRow);
+            }
+            transition_table_text += "]\n";
+        }
+    }
+
+
+};
+
+function restoreBackup1(){
+    restoreBackup('{"nodes":[{"x":210,"y":164,"text":"q1","isAcceptState":true},{"x":431,"y":166,"text":"q2","isAcceptState":false}'+
+        ',{"x":430,"y":337,"text":"q3","isAcceptState":false},{"x":210,"y":337,"text":"q4","isAcceptState":true}],'+
+        '"links":[{"type":"StartLink","node":0,"text":"","deltaX":-99,"deltaY":0},{"type":"Link","nodeA":0,"nodeB":1,"text":"E,E->$"'+
+        ',"lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},{"type":"SelfLink","node":1,"text":"0,E->0",'+
+        '"anchorAngle":-0.6202494859828215},{"type":"Link","nodeA":1,"nodeB":2,"text":"1,0->E","lineAngleAdjust":0,'+
+        '"parallelPart":0.5,"perpendicularPart":0},{"type":"SelfLink","node":2,"text":"1,0->E","anchorAngle":-0.1586552621864014},'+
+        '{"type":"Link","nodeA":2,"nodeB":3,"text":"E,$->E","lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0}]}');
+}
+
+function restoreBackup2(){
+    restoreBackup('{"nodes":[{"x":77,"y":293,"text":"q1","isAcceptState":false},{"x":213,"y":294,"text":"q2","isAcceptState":false}'+
+        ',{"x":316,"y":174,"text":"q3","isAcceptState":false},{"x":311,"y":414,"text":"q5","isAcceptState":false},'+
+        '{"x":491,"y":174,"text":"q4","isAcceptState":true},{"x":491,"y":412,"text":"q6","isAcceptState":false},'+
+        '{"x":667,"y":408,"text":"q7","isAcceptState":true}],"links":[{"type":"StartLink","node":0,"text":"","deltaX":-66,"deltaY":0}'+
+        ',{"type":"Link","nodeA":0,"nodeB":1,"text":"E,E->$","lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},'+
+        '{"type":"SelfLink","node":1,"text":"a,E->a","anchorAngle":1.892546881191539},{"type":"Link","nodeA":1,"nodeB":2,'+
+        '"text":"E,E->E","lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},{"type":"SelfLink","node":2,"text":"b,a->E"'+
+        ',"anchorAngle":-1.5707963267948966},{"type":"Link","nodeA":2,"nodeB":4,"text":"E,$->E","lineAngleAdjust":0,'+
+        '"parallelPart":0.5,"perpendicularPart":0},{"type":"SelfLink","node":4,"text":"c,E->E","anchorAngle":0},{"type":"Link",'+
+        '"nodeA":1,"nodeB":3,"text":"E,E->E","lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},{"type":"SelfLink",'+
+        '"node":3,"text":"b,E->E","anchorAngle":1.7033478590915707},{"type":"Link","nodeA":3,"nodeB":5,"text":"E,E->E",'+
+        '"lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},{"type":"SelfLink","node":5,"text":"c,a->E",'+
+        '"anchorAngle":1.5707963267948966},{"type":"Link","nodeA":5,"nodeB":6,"text":"E,$->E","lineAngleAdjust":0,'+
+        '"parallelPart":0.5,"perpendicularPart":0}]}');
 }

@@ -37,10 +37,14 @@
                         <span class="error">Your browser does not support<br>the HTML5 &lt;canvas&gt; element</span>
                     </canvas>
                 </div>
+                <div id="input_animation">
+                    <div style='text-decoration:line-through;' class="processed"></div>
+                    <div class="unprocessed"></div>
+                </div>
             </div>
             <div class="col-md-5 center">
                 <div id="stack">
-                    <table >
+                    <table>
                         <tr id="stack-row"></tr>
                     </table>
                 </div>
@@ -49,17 +53,44 @@
                     <input type="text" id="input_textPDA" name="input" class="form-control input_text" placeholder="Ingrese una cadena">
                     <br>
                     <button type="button" id="disable_canvas_buttonPDA" class="btn btn-default" onclick="disableMouseOverPDACanvas()">Procesar Cadena</button>
-                    <button type="button" name="" id="showPDABtn" class="btn btn-default" onclick="">Mostrar Definición</button>
+                    <button type="button" name="" id="showPDABtn" class="btn btn-default" onclick="showPDADefinition()">Mostrar Definición</button>
+                    <br>
+                    <br>
+                    <button type="button" name="" id="createBackup" class="btn btn-default" onclick="restoreBackup1()">Ejemplo 1</button>
+                    <button type="button" name="" id="restoreBackup" class="btn btn-default" onclick="restoreBackup2()">Ejemplo 2</button>
                 </div>
             </div>
         </div>
     </div>
     <div id="pda-definition">
-        <button type="button" id="hidePDABtn" class="btn btn-default" onclick="">Mostrar PDA</button>
+        <button type="button" id="hidePDABtn" class="btn btn-default" onclick="hidePDADefinition()">Mostrar PDA</button>
         <div class="content">
             <div class="content-title">
                 <h1 style="color:white"><u>Definición Formal</u></h1></div>
             <div class="content-body">
+                <h2 style="color:white">M = (Q,&nbsp;&Sigma;,&nbsp;&Gamma;,&nbsp;&delta;,&nbsp;q<sub>0</sub>,&nbsp;F)</h2>
+                <br>
+                <h3 class="title-info">Q = {&nbsp;<p class="states info"></p>&nbsp;}</h3>
+                <br>
+                <h3 class="title-info">&Sigma; = {&nbsp;<p class="alphabet info"></p>&nbsp;}</h3>
+                <br>
+                <h3 class="title-info">&Gamma; = {&nbsp;<p class="stack info"></p>&nbsp;}</h3>
+                <br>
+                <h3 class="title-info">&delta;</h3>
+                <br>
+                <table class="transitions table table-condensed">
+                    <tr>
+                        <th>Estado Actual</th>
+                        <th>Símbolo Cadena</th>
+                        <th>Pop</th>
+                        <th>Push</th>
+                        <th>Siguiente Estado</th>
+                    </tr>
+                </table>
+                <br>
+                <h3 class="title-info">q<sub>0</sub>&nbsp;=&nbsp;<p class="initial_state info"></p></h3>
+                <br>
+                <h3 class="title-info">F = {&nbsp; <p class="final_states info"></p>&nbsp;}</h3>
             </div>
         </div>
     </div>
