@@ -12,11 +12,6 @@ function TM(nodes, links, user_input) {
 	this.initial_state = this.getInitialState();
 	this.accept_state = this.getAcceptState();
 	this.reject_state = this.getRejectState();
-	if (this.reject_state == null) {
-		this.reject_state = new Node(0, 0);
-		this.reject_state.isRejectState = true;
-		this.reject_state.text = "qr";
-	}
 
 	this.configurations = [];
 	this.states_path_text = [];
@@ -174,7 +169,11 @@ TM.prototype.getRejectState = function() {
 		if (this.states[index].isRejectState)
 			return this.states[index];
 
-	return null;
+	var ret_val = new Node(0, 0);
+	ret_val.isRejectState = true;
+	ret_val.text = "qr";
+	
+	return ret_val;
 };
 
 TM.prototype.getAcceptState = function() {
@@ -315,7 +314,7 @@ TM.prototype.showTransitionTableOnHTML = function() {
 TM.prototype.showAlphabetsOnHTML = function() {
 	var input_alphabet_text = Array.from(this.input_alphabet);
 	$(".input_alphabet").text("{" + input_alphabet_text.toString() + "}");
-	$(".tape_alphabet").text("{" + input_alphabet_text.toString() + ",_}");
+	$(".tape_alphabet").text("{" + input_alphabet_text.toString() + "}");
 };
 
 TM.prototype.getStatesFromText = function() {
@@ -364,6 +363,59 @@ TM.prototype.getTransitionsFromText = function() {
 		}
 
 	return ret_val;
+};
+
+TM.prototype.getJsonDescription = function() {
+	var backup = {
+     'nodes': [],
+     'links': [],
+   };
+   for(var i = 0; i < nodes.length; i++) {
+     var node = nodes[i];
+     var backupNode = {
+       'x': node.x,
+       'y': node.y,
+       'text': node.text,
+       'isAcceptState': node.isAcceptState,
+       'isRejectState': node.isRejectState,
+     };
+     backup.nodes.push(backupNode);
+   }
+   for(var i = 0; i < links.length; i++) {
+     var link = links[i];
+     var backupLink = null;
+     if(link instanceof SelfLink) {
+       backupLink = {
+         'type': 'SelfLink',
+         'node': nodes.indexOf(link.node),
+         'text': link.text,
+         'anchorAngle': link.anchorAngle,
+       };
+     } else if(link instanceof StartLink) {
+       backupLink = {
+         'type': 'StartLink',
+         'node': nodes.indexOf(link.node),
+         'text': link.text,
+         'deltaX': link.deltaX,
+         'deltaY': link.deltaY,
+       };
+     } else if(link instanceof Link) {
+       backupLink = {
+         'type': 'Link',
+         'nodeA': nodes.indexOf(link.nodeA),
+         'nodeB': nodes.indexOf(link.nodeB),
+         'text': link.text,
+         'lineAngleAdjust': link.lineAngleAdjust,
+         'parallelPart': link.parallelPart,
+         'perpendicularPart': link.perpendicularPart,
+       };
+     }
+     if(backupLink != null) {
+       backup.links.push(backupLink);
+     }
+   }
+   console.log(backup);
+   return backup;
 };
 
 function showTMDefinition() {
@@ -421,24 +473,48 @@ function validateLinksHasGenericText() {
 	return true;
 }
 
+function prepareNodesAndLinks() {
+	for (var index = 0; index < nodes.lenght; index++)
+		nodes[index].strokeStyle = "white";
+	for (var index = 0; index < links.length; index++)
+		links[index].strokeStyle = "white";
+}
+
 function disableMouseOverTMCanvas() {
 	var generic_validations = genericValidations();
 	if (!generic_validations.has_errors) {
+		prepareNodesAndLinks();
 		var tm = new TM(nodes, links, document.getElementById('input_text').value);
 		tm.revertAllColoring();
 		if (tm.validateTmStructure()) {
-	        canvas.onmousedown = function(e) {};
-	        canvas.ondblclick = function(e) {};
-	        canvas.onmousemove = function(e) {};
-	        canvas.onmouseup = function(e) {};
+			canvas.onmousedown = function(e) {};
+			canvas.ondblclick = function(e) {};
+			canvas.onmousemove = function(e) {};
+			canvas.onmouseup = function(e) {};
 
- //        $("#input_animation .processed").text("");
- //        $("#input_animation .unprocessed").text(document.getElementById('input_text').value);
-	       tm.showOnHTML();
-	       tm.evaluateString();
-	       tm.animateMachine();
+			tm.showOnHTML();
+			tm.evaluateString();
+			tm.animateMachine();
 		}
 	} else {
 		alert(generic_validations.error_message);
 	}
 };
+
+/*
+{w | w contiene la misma cantidad de 0s que de 1s}
+{"nodes":[{"x":404,"y":98,"text":"A","isAcceptState":false,"isRejectState":false},{"x":157,"y":274,"text":"B","isAcceptState":false,"isRejectState":false},{"x":649,"y":274,"text":"C","isAcceptState":false,"isRejectState":false},{"x":404,"y":296,"text":"D","isAcceptState":false,"isRejectState":false},{"x":404,"y":420,"text":"E","isAcceptState":false,"isRejectState":false},{"x":404,"y":539,"text":"F","isAcceptState":true,"isRejectState":false}],"links":[{"type":"StartLink","node":0,"text":"","deltaX":0,"deltaY":-62},{"type":"Link","nodeA":4,"nodeB":5,"text":"_->_,R","lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},{"type":"SelfLink","node":4,"text":"X->X,R","anchorAngle":0.2744672113025267},{"type":"Link","nodeA":4,"nodeB":2,"text":"1->X,R","lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},{"type":"Link","nodeA":4,"nodeB":1,"text":"0->X,R","lineAngleAdjust":3.141592653589793,"parallelPart":0.5497070848303569,"perpendicularPart":0},{"type":"Link","nodeA":3,"nodeB":4,"text":"_->_,R","lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},{"type":"Link","nodeA":2,"nodeB":3,"text":"0->X,L","lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},{"type":"Link","nodeA":1,"nodeB":3,"text":"1->X,L","lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},{"type":"SelfLink","node":1,"text":"0->0,R","anchorAngle":2.9168694333523124},{"type":"SelfLink","node":2,"text":"1->1,R","anchorAngle":0.3217505543966422},{"type":"Link","nodeA":0,"nodeB":1,"text":"0->X,R","lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},{"type":"Link","nodeA":0,"nodeB":2,"text":"1->X,R","lineAngleAdjust":3.141592653589793,"parallelPart":0.512115251480753,"perpendicularPart":0},{"type":"SelfLink","node":3,"text":"0->0,L","anchorAngle":-2.3010339280661736},{"type":"SelfLink","node":3,"text":"1->1,L","anchorAngle":-1.5707963267948966},{"type":"SelfLink","node":3,"text":"X->X,L","anchorAngle":-0.7714077819458787}]}
+*/
+
+/*
+L(M) = w#w
+{"nodes":[{"x":409,"y":83,"text":"A","isAcceptState":false,"isRejectState":false},{"x":247,"y":171,"text":"B","isAcceptState":false,"isRejectState":false},{"x":569,"y":171,"text":"C","isAcceptState":false,"isRejectState":false},{"x":247,"y":335,"text":"D","isAcceptState":false,"isRejectState":false},{"x":569,"y":335,"text":"E","isAcceptState":false,"isRejectState":false},{"x":409,"y":409,"text":"F","isAcceptState":false,"isRejectState":false},{"x":409,"y":534,"text":"G","isAcceptState":false,"isRejectState":false},{"x":409,"y":205,"text":"H","isAcceptState":false,"isRejectState":false},{"x":409,"y":312,"text":"I","isAcceptState":true,"isRejectState":false}],"links":[{"type":"StartLink","node":0,"text":"","deltaX":0,"deltaY":-67},{"type":"Link","nodeA":0,"nodeB":1,"text":"0->X,R","lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},{"type":"Link","nodeA":0,"nodeB":2,"text":"1->X,R","lineAngleAdjust":3.141592653589793,"parallelPart":0.5458823529411765,"perpendicularPart":0},{"type":"SelfLink","node":2,"text":"0->0,R","anchorAngle":0.20177274421866476},{"type":"SelfLink","node":2,"text":"1->1,R","anchorAngle":0.4327545927209293},{"type":"SelfLink","node":1,"text":"0->0,R","anchorAngle":2.85725145572374},{"type":"SelfLink","node":1,"text":"1->1,R","anchorAngle":2.580464220401414},{"type":"Link","nodeA":1,"nodeB":3,"text":"#->#,R","lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},{"type":"Link","nodeA":2,"nodeB":4,"text":"#->#,R","lineAngleAdjust":3.141592653589793,"parallelPart":0.6143790849673203,"perpendicularPart":0},{"type":"Link","nodeA":0,"nodeB":7,"text":"#->#,R","lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},{"type":"SelfLink","node":7,"text":"X->X,R","anchorAngle":0},{"type":"Link","nodeA":7,"nodeB":8,"text":"_->_,R","lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},{"type":"SelfLink","node":3,"text":"X->X,R","anchorAngle":3.141592653589793},{"type":"SelfLink","node":4,"text":"X->X,R","anchorAngle":0},{"type":"Link","nodeA":4,"nodeB":5,"text":"1->X,L","lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},{"type":"Link","nodeA":3,"nodeB":5,"text":"0->X,L","lineAngleAdjust":3.141592653589793,"parallelPart":0.5497283998733346,"perpendicularPart":0},{"type":"Link","nodeA":5,"nodeB":6,"text":"#->#,L","lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},{"type":"SelfLink","node":5,"text":"1->1,L","anchorAngle":0.4157457564158564},{"type":"SelfLink","node":5,"text":"0->0,L","anchorAngle":0.1649338854081928},{"type":"SelfLink","node":5,"text":"X->X,L","anchorAngle":0.7427613968736926},{"type":"Link","nodeA":6,"nodeB":0,"text":"X->X,R","lineAngleAdjust":3.141592653589793,"parallelPart":0.7516629711751663,"perpendicularPart":-296},{"type":"SelfLink","node":6,"text":"0->0,L","anchorAngle":0},{"type":"SelfLink","node":6,"text":"1->1,L","anchorAngle":0.22513803724713607}]} 
+*/
+
+function restoreBackup1() {
+	restoreBackup('{"nodes":[{"x":404,"y":98,"text":"A","isAcceptState":false,"isRejectState":false},{"x":157,"y":274,"text":"B","isAcceptState":false,"isRejectState":false},{"x":649,"y":274,"text":"C","isAcceptState":false,"isRejectState":false},{"x":404,"y":296,"text":"D","isAcceptState":false,"isRejectState":false},{"x":404,"y":420,"text":"E","isAcceptState":false,"isRejectState":false},{"x":404,"y":539,"text":"F","isAcceptState":true,"isRejectState":false}],"links":[{"type":"StartLink","node":0,"text":"","deltaX":0,"deltaY":-62},{"type":"Link","nodeA":4,"nodeB":5,"text":"_->_,R","lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},{"type":"SelfLink","node":4,"text":"X->X,R","anchorAngle":0.2744672113025267},{"type":"Link","nodeA":4,"nodeB":2,"text":"1->X,R","lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},{"type":"Link","nodeA":4,"nodeB":1,"text":"0->X,R","lineAngleAdjust":3.141592653589793,"parallelPart":0.5497070848303569,"perpendicularPart":0},{"type":"Link","nodeA":3,"nodeB":4,"text":"_->_,R","lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},{"type":"Link","nodeA":2,"nodeB":3,"text":"0->X,L","lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},{"type":"Link","nodeA":1,"nodeB":3,"text":"1->X,L","lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},{"type":"SelfLink","node":1,"text":"0->0,R","anchorAngle":2.9168694333523124},{"type":"SelfLink","node":2,"text":"1->1,R","anchorAngle":0.3217505543966422},{"type":"Link","nodeA":0,"nodeB":1,"text":"0->X,R","lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},{"type":"Link","nodeA":0,"nodeB":2,"text":"1->X,R","lineAngleAdjust":3.141592653589793,"parallelPart":0.512115251480753,"perpendicularPart":0},{"type":"SelfLink","node":3,"text":"0->0,L","anchorAngle":-2.3010339280661736},{"type":"SelfLink","node":3,"text":"1->1,L","anchorAngle":-1.5707963267948966},{"type":"SelfLink","node":3,"text":"X->X,L","anchorAngle":-0.7714077819458787}]}');
+}
+
+function restoreBackup2() {
+	restoreBackup('{"nodes":[{"x":409,"y":83,"text":"A","isAcceptState":false,"isRejectState":false},{"x":247,"y":171,"text":"B","isAcceptState":false,"isRejectState":false},{"x":569,"y":171,"text":"C","isAcceptState":false,"isRejectState":false},{"x":247,"y":335,"text":"D","isAcceptState":false,"isRejectState":false},{"x":569,"y":335,"text":"E","isAcceptState":false,"isRejectState":false},{"x":409,"y":409,"text":"F","isAcceptState":false,"isRejectState":false},{"x":409,"y":534,"text":"G","isAcceptState":false,"isRejectState":false},{"x":409,"y":205,"text":"H","isAcceptState":false,"isRejectState":false},{"x":409,"y":312,"text":"I","isAcceptState":true,"isRejectState":false}],"links":[{"type":"StartLink","node":0,"text":"","deltaX":0,"deltaY":-67},{"type":"Link","nodeA":0,"nodeB":1,"text":"0->X,R","lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},{"type":"Link","nodeA":0,"nodeB":2,"text":"1->X,R","lineAngleAdjust":3.141592653589793,"parallelPart":0.5458823529411765,"perpendicularPart":0},{"type":"SelfLink","node":2,"text":"0->0,R","anchorAngle":0.20177274421866476},{"type":"SelfLink","node":2,"text":"1->1,R","anchorAngle":0.4327545927209293},{"type":"SelfLink","node":1,"text":"0->0,R","anchorAngle":2.85725145572374},{"type":"SelfLink","node":1,"text":"1->1,R","anchorAngle":2.580464220401414},{"type":"Link","nodeA":1,"nodeB":3,"text":"#->#,R","lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},{"type":"Link","nodeA":2,"nodeB":4,"text":"#->#,R","lineAngleAdjust":3.141592653589793,"parallelPart":0.6143790849673203,"perpendicularPart":0},{"type":"Link","nodeA":0,"nodeB":7,"text":"#->#,R","lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},{"type":"SelfLink","node":7,"text":"X->X,R","anchorAngle":0},{"type":"Link","nodeA":7,"nodeB":8,"text":"_->_,R","lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},{"type":"SelfLink","node":3,"text":"X->X,R","anchorAngle":3.141592653589793},{"type":"SelfLink","node":4,"text":"X->X,R","anchorAngle":0},{"type":"Link","nodeA":4,"nodeB":5,"text":"1->X,L","lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},{"type":"Link","nodeA":3,"nodeB":5,"text":"0->X,L","lineAngleAdjust":3.141592653589793,"parallelPart":0.5497283998733346,"perpendicularPart":0},{"type":"Link","nodeA":5,"nodeB":6,"text":"#->#,L","lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},{"type":"SelfLink","node":5,"text":"1->1,L","anchorAngle":0.4157457564158564},{"type":"SelfLink","node":5,"text":"0->0,L","anchorAngle":0.1649338854081928},{"type":"SelfLink","node":5,"text":"X->X,L","anchorAngle":0.7427613968736926},{"type":"Link","nodeA":6,"nodeB":0,"text":"X->X,R","lineAngleAdjust":3.141592653589793,"parallelPart":0.7516629711751663,"perpendicularPart":-296},{"type":"SelfLink","node":6,"text":"0->0,L","anchorAngle":0},{"type":"SelfLink","node":6,"text":"1->1,L","anchorAngle":0.22513803724713607}]}');
+}

@@ -372,13 +372,10 @@ function fixed(number, digits) {
   return number.toFixed(digits).replace(/0+$/, '').replace(/\.$/, '');
 }
 
-function restoreBackup() {
-  if(!localStorage || !JSON) {
-    return;
-  }
+function restoreBackup(data) {
 
   try {
-    var backup = JSON.parse(localStorage['fsm']);
+    var backup = JSON.parse(data);
 
     for(var i = 0; i < backup.nodes.length; i++) {
       var backupNode = backup.nodes[i];
@@ -411,8 +408,9 @@ function restoreBackup() {
       }
     }
   } catch(e) {
-    localStorage['fsm'] = '';
+    console.log("ERROR: Restore backup");
   }
+  draw();
 }
 
 function saveBackup() {
