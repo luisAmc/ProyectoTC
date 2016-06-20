@@ -419,6 +419,22 @@ TM.prototype.getJsonDescription = function() {
 };
 
 function showTMDefinition() {
+	var generic_validations = genericValidations();
+	if (!generic_validations.has_errors) {
+		prepareNodesAndLinks();
+		var tm = new TM(nodes, links, document.getElementById('input_text').value);
+		tm.revertAllColoring();
+		if (tm.validateTmStructure()) {
+			canvas.onmousedown = function(e) {};
+			canvas.ondblclick = function(e) {};
+			canvas.onmousemove = function(e) {};
+			canvas.onmouseup = function(e) {};
+
+			tm.showOnHTML();
+		}
+	} else {
+		alert(generic_validations.error_message);
+	}
 	// if ($(".states").text() !== "") {
 		$(".mainComponents").slideUp();
         $("body").css("overflow", "auto");

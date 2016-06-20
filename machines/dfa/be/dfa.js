@@ -354,6 +354,7 @@ function enableMouseOverDFACanvas() {
 
 function restoreBackup1(){
     restoreBackup('{"nodes":[{"x":177,"y":211,"text":"a","isAcceptState":true},{"x":402,"y":207,"text":"b","isAcceptState":false}],"links":[{"type":"StartLink","node":0,"text":"","deltaX":-98,"deltaY":0},{"type":"Link","nodeA":0,"nodeB":1,"text":"1","lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},{"type":"Link","nodeA":1,"nodeB":0,"text":"1","lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},{"type":"SelfLink","node":0,"text":"0","anchorAngle":1.7681918866447774},{"type":"SelfLink","node":1,"text":"0","anchorAngle":-0.4636476090008061}]}');
+    
 }
 
 function restoreBackup2(){
