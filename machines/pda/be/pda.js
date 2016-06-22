@@ -633,13 +633,13 @@ PDA.prototype.print = function() {
     for (var i = 0; i < this.final_states.length; i++) {
         finalStatesTexts.push(this.final_states[i].text);
     }
-    this.alphabet.splice(this.alphabet.indexOf("E"),1);
+    this.alphabet.splice(this.alphabet.indexOf("E"), 1);
     $(".states").text(stateTexts.toString());
     $(".alphabet").text(this.alphabet.toString());
     $(".stack").text(this.alphabetStack.toString());
-    try{
+    try {
         $(".initial_state").text(this.initial_state.text);
-    }catch(err){};
+    } catch (err) {};
     $(".final_states").text(finalStatesTexts.toString());
     this.printTransitionTable();
 };
@@ -677,29 +677,35 @@ PDA.prototype.printTransitionTable = function() {
 
 };
 
-function restoreBackup1(){
-    restoreBackup('{"nodes":[{"x":210,"y":164,"text":"q1","isAcceptState":true},{"x":431,"y":166,"text":"q2","isAcceptState":false}'+
-        ',{"x":430,"y":337,"text":"q3","isAcceptState":false},{"x":210,"y":337,"text":"q4","isAcceptState":true}],'+
-        '"links":[{"type":"StartLink","node":0,"text":"","deltaX":-99,"deltaY":0},{"type":"Link","nodeA":0,"nodeB":1,"text":"E,E->$"'+
-        ',"lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},{"type":"SelfLink","node":1,"text":"0,E->0",'+
-        '"anchorAngle":-0.6202494859828215},{"type":"Link","nodeA":1,"nodeB":2,"text":"1,0->E","lineAngleAdjust":0,'+
-        '"parallelPart":0.5,"perpendicularPart":0},{"type":"SelfLink","node":2,"text":"1,0->E","anchorAngle":-0.1586552621864014},'+
+function restoreBackup1() {
+    nodes = [];
+    links = [];
+    draw();
+    restoreBackup('{"nodes":[{"x":210,"y":164,"text":"q1","isAcceptState":true},{"x":431,"y":166,"text":"q2","isAcceptState":false}' +
+        ',{"x":430,"y":337,"text":"q3","isAcceptState":false},{"x":210,"y":337,"text":"q4","isAcceptState":true}],' +
+        '"links":[{"type":"StartLink","node":0,"text":"","deltaX":-99,"deltaY":0},{"type":"Link","nodeA":0,"nodeB":1,"text":"E,E->$"' +
+        ',"lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},{"type":"SelfLink","node":1,"text":"0,E->0",' +
+        '"anchorAngle":-0.6202494859828215},{"type":"Link","nodeA":1,"nodeB":2,"text":"1,0->E","lineAngleAdjust":0,' +
+        '"parallelPart":0.5,"perpendicularPart":0},{"type":"SelfLink","node":2,"text":"1,0->E","anchorAngle":-0.1586552621864014},' +
         '{"type":"Link","nodeA":2,"nodeB":3,"text":"E,$->E","lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0}]}');
 }
 
-function restoreBackup2(){
-    restoreBackup('{"nodes":[{"x":77,"y":293,"text":"q1","isAcceptState":false},{"x":213,"y":294,"text":"q2","isAcceptState":false}'+
-        ',{"x":316,"y":174,"text":"q3","isAcceptState":false},{"x":311,"y":414,"text":"q5","isAcceptState":false},'+
-        '{"x":491,"y":174,"text":"q4","isAcceptState":true},{"x":491,"y":412,"text":"q6","isAcceptState":false},'+
-        '{"x":667,"y":408,"text":"q7","isAcceptState":true}],"links":[{"type":"StartLink","node":0,"text":"","deltaX":-66,"deltaY":0}'+
-        ',{"type":"Link","nodeA":0,"nodeB":1,"text":"E,E->$","lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},'+
-        '{"type":"SelfLink","node":1,"text":"a,E->a","anchorAngle":1.892546881191539},{"type":"Link","nodeA":1,"nodeB":2,'+
-        '"text":"E,E->E","lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},{"type":"SelfLink","node":2,"text":"b,a->E"'+
-        ',"anchorAngle":-1.5707963267948966},{"type":"Link","nodeA":2,"nodeB":4,"text":"E,$->E","lineAngleAdjust":0,'+
-        '"parallelPart":0.5,"perpendicularPart":0},{"type":"SelfLink","node":4,"text":"c,E->E","anchorAngle":0},{"type":"Link",'+
-        '"nodeA":1,"nodeB":3,"text":"E,E->E","lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},{"type":"SelfLink",'+
-        '"node":3,"text":"b,E->E","anchorAngle":1.7033478590915707},{"type":"Link","nodeA":3,"nodeB":5,"text":"E,E->E",'+
-        '"lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},{"type":"SelfLink","node":5,"text":"c,a->E",'+
-        '"anchorAngle":1.5707963267948966},{"type":"Link","nodeA":5,"nodeB":6,"text":"E,$->E","lineAngleAdjust":0,'+
+function restoreBackup2() {
+    nodes = [];
+    links = [];
+    draw();
+    restoreBackup('{"nodes":[{"x":77,"y":293,"text":"q1","isAcceptState":false},{"x":213,"y":294,"text":"q2","isAcceptState":false}' +
+        ',{"x":316,"y":174,"text":"q3","isAcceptState":false},{"x":311,"y":414,"text":"q5","isAcceptState":false},' +
+        '{"x":491,"y":174,"text":"q4","isAcceptState":true},{"x":491,"y":412,"text":"q6","isAcceptState":false},' +
+        '{"x":667,"y":408,"text":"q7","isAcceptState":true}],"links":[{"type":"StartLink","node":0,"text":"","deltaX":-66,"deltaY":0}' +
+        ',{"type":"Link","nodeA":0,"nodeB":1,"text":"E,E->$","lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},' +
+        '{"type":"SelfLink","node":1,"text":"a,E->a","anchorAngle":1.892546881191539},{"type":"Link","nodeA":1,"nodeB":2,' +
+        '"text":"E,E->E","lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},{"type":"SelfLink","node":2,"text":"b,a->E"' +
+        ',"anchorAngle":-1.5707963267948966},{"type":"Link","nodeA":2,"nodeB":4,"text":"E,$->E","lineAngleAdjust":0,' +
+        '"parallelPart":0.5,"perpendicularPart":0},{"type":"SelfLink","node":4,"text":"c,E->E","anchorAngle":0},{"type":"Link",' +
+        '"nodeA":1,"nodeB":3,"text":"E,E->E","lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},{"type":"SelfLink",' +
+        '"node":3,"text":"b,E->E","anchorAngle":1.7033478590915707},{"type":"Link","nodeA":3,"nodeB":5,"text":"E,E->E",' +
+        '"lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},{"type":"SelfLink","node":5,"text":"c,a->E",' +
+        '"anchorAngle":1.5707963267948966},{"type":"Link","nodeA":5,"nodeB":6,"text":"E,$->E","lineAngleAdjust":0,' +
         '"parallelPart":0.5,"perpendicularPart":0}]}');
 }
